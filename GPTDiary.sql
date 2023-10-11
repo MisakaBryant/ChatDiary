@@ -1,0 +1,11 @@
+CREATE SCHEMA IF NOT EXISTS GPTDiary;
+
+USE GPTDiary;
+
+CREATE TABLE IF NOT EXISTS user1(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(64),
+    password VARCHAR(64),
+    phone VARCHAR(64),
+    bio VARCHAR(256)
+)
