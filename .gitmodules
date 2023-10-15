@@ -1,0 +1,3 @@
+[submodule "FuckHarmonyOS"]
+	path = FuckHarmonyOS
+	url = https://github.com/mikumifa/FuckHarmonyOS.git
