@@ -19,10 +19,10 @@ public class UserServiceImpl implements UserService {
      *
      * @param username 用户名
      * @param password 密码
-     * @param phone    手机号
+     * @param email    邮箱
      */
     @Override
-    public void register(String username, String password, String phone) {
+    public void register(String username, String password, String email) {
         UserEntity user = userDao.findByUsername(username);
 
         if (user != null) {
@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
         }
 
         userDao.save(UserEntity.builder().username(username).password(SaSecureUtil.md5(password))
-                .phone(phone).bio("").build());
+                .email(email).build());
     }
 
     /**
@@ -61,16 +61,14 @@ public class UserServiceImpl implements UserService {
     /**
      * 编辑用户信息
      *
-     * @param username  用户名
-     * @param phone     手机号
-     * @param bio       简介
+     * @param username 用户名
      */
     @Override
-    public void editInfo(String username, String phone, String bio) {
+    public void editInfo(String username) {
         UserEntity user = userDao.findByUsername(username);
         if (user == null) {
             throw new BizException(BizError.USER_NOT_FOUND);
         }
-        userDao.save(user.setPhone(phone).setBio(bio));
+        userDao.save(user.setUsername(username));
     }
 }
