@@ -1,6 +1,7 @@
 package com.mobileSE.chatdiary.pojo.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +11,7 @@ import lombok.experimental.Accessors;
 
 
 @Entity
-@Table(name = "user1")  // table name "user" is a reserved word in H2
+@Table(name = "user")
 @Data
 @Builder
 @AllArgsConstructor
@@ -21,14 +22,11 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @NotNull
     @Column(unique = true)
     private String username;
     @NotNull
     private String password;
-
-    private String phone;
-
-    private String bio;
+    @Email
+    private String email;
 }
