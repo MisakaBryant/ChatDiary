@@ -24,16 +24,14 @@ public class UserController {
     @PostMapping("session")
     public CommonResponse<?> login(@Valid @RequestBody LoginRequest request) {
         // Throws BizException if auth failed.
-        userService.login(request.getUsername(), request.getPassword());
-        StpUtil.login(request.getUsername());
+        userService.login(request.getEmail(), request.getPassword());
+        StpUtil.login(request.getEmail());
         return CommonResponse.success();
     }
 
     @PostMapping("user")
     public CommonResponse<?> register(@Valid @RequestBody RegisterRequest request) {
-        // Throws BizException if register failed.
         userService.register(request.getUsername(), request.getPassword(), request.getEmail());
-
         return CommonResponse.success();
     }
 

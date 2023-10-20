@@ -11,5 +11,5 @@ public class EditUserInfoRequest {
 
 
     @NotNull
-    private String username;
+    private String email;
 }

@@ -23,36 +23,35 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void register(String username, String password, String email) {
-        UserEntity user = userDao.findByUsername(username);
+        UserEntity user = userDao.findByEmail(email);
 
         if (user != null) {
             throw new BizException(BizError.USERNAME_EXISTS);
         }
 
-        userDao.save(UserEntity.builder().username(username).password(SaSecureUtil.md5(password))
-                .email(email).build());
+        userDao.save(UserEntity.builder().username(username).password(SaSecureUtil.md5(password)).email(email).build());
     }
 
     /**
-     * 根据用户名查询用户信息
+     * 根据查询用户信息
      *
-     * @param username 用户名
+     * @param email 邮箱
      * @return 用户实体对象
      */
     @Override
-    public UserEntity findByUserName(String username) {
-        return userDao.findByUsername(username);
+    public UserEntity findByUserName(String email) {
+        return userDao.findByEmail(email);
     }
 
     /**
      * 用户登录
      *
-     * @param username 用户名
+     * @param email    邮箱
      * @param password 密码
      */
     @Override
-    public void login(String username, String password) {
-        UserEntity user = userDao.findByUsername(username);
+    public void login(String email, String password) {
+        UserEntity user = userDao.findByEmail(email);
         if (user == null || !SaSecureUtil.md5(password).equals(user.getPassword())) {
             throw new BizException(BizError.INVALID_CREDENTIAL);
         }
@@ -61,14 +60,14 @@ public class UserServiceImpl implements UserService {
     /**
      * 编辑用户信息
      *
-     * @param username 用户名
+     * @param email 邮箱
      */
     @Override
-    public void editInfo(String username) {
-        UserEntity user = userDao.findByUsername(username);
+    public void editInfo(String email) {
+        UserEntity user = userDao.findByEmail(email);
         if (user == null) {
             throw new BizException(BizError.USER_NOT_FOUND);
         }
-        userDao.save(user.setUsername(username));
+        userDao.save(user.setEmail(email));
     }
 }
