@@ -9,24 +9,25 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import java.util.Date;
 
 @Entity
-@Table(name = "user")
+@Table(name = "diary")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-public class UserEntity {
-
+public class DiaryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull
-    private String username;
-    @NotNull
-    private String password;
-    @Email
-    @Column(unique = true)
-    private String email;
+
+    private String title;
+    private String content;
+    private Date timestamp;
+    private String position;
+    private String type;
+    private Long authorId;
 }
+

@@ -6,11 +6,11 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum BizError {
-
-    USERNAME_EXISTS(200001, "用户名已存在", 400),
+    UNKNOWN_ERROR(200000, "未知错误", 400),
+    EMAIL_EXISTS(200001, "邮箱已存在", 400),
     INVALID_CREDENTIAL(200002, "用户名或密码错误", 400),
-    USER_NOT_FOUND(200003, "用户不存在", 400);
-
+    USER_NOT_FOUND(200003, "用户不存在", 400),
+    INVALID_INPUT(200004, "不合理输入", 400);
     final int code;
     final String message;
     final int httpCode;

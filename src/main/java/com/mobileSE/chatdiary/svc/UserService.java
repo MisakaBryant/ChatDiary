@@ -1,9 +1,10 @@
 package com.mobileSE.chatdiary.svc;
 
 import com.mobileSE.chatdiary.pojo.entity.UserEntity;
+import com.mobileSE.chatdiary.pojo.vo.user.UserVO;
 
 public interface UserService {
-    void login(String username, String password);
+    UserVO login(String username, String password);
 
     void register(String username, String password, String email);
 

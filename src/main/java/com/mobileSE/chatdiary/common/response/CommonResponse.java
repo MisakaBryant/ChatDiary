@@ -23,11 +23,6 @@ public class CommonResponse<T> {
      */
     private T data;
 
-
-    /**
-     * used to define http status code (not included in JSON response)
-     */
-    @JsonIgnore
     private int httpCode;
 
     public static <T> CommonResponse<T> success() {

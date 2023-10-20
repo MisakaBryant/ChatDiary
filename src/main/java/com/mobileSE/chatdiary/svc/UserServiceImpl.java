@@ -5,7 +5,9 @@ import cn.dev33.satoken.secure.SaSecureUtil;
 import com.mobileSE.chatdiary.dao.UserDao;
 import com.mobileSE.chatdiary.common.exception.BizError;
 import com.mobileSE.chatdiary.common.exception.BizException;
+import com.mobileSE.chatdiary.mapper.UserMapper;
 import com.mobileSE.chatdiary.pojo.entity.UserEntity;
+import com.mobileSE.chatdiary.pojo.vo.user.UserVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,9 +28,8 @@ public class UserServiceImpl implements UserService {
         UserEntity user = userDao.findByEmail(email);
 
         if (user != null) {
-            throw new BizException(BizError.USERNAME_EXISTS);
+            throw new BizException(BizError.EMAIL_EXISTS);
         }
-
         userDao.save(UserEntity.builder().username(username).password(SaSecureUtil.md5(password)).email(email).build());
     }
 
@@ -50,11 +51,12 @@ public class UserServiceImpl implements UserService {
      * @param password 密码
      */
     @Override
-    public void login(String email, String password) {
+    public UserVO login(String email, String password) {
         UserEntity user = userDao.findByEmail(email);
         if (user == null || !SaSecureUtil.md5(password).equals(user.getPassword())) {
             throw new BizException(BizError.INVALID_CREDENTIAL);
         }
+        return UserMapper.INSTANCE.toUserVO(user);
     }
 
     /**

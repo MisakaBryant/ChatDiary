@@ -2,6 +2,8 @@ package com.mobileSE.chatdiary.controller;
 
 
 import cn.dev33.satoken.stp.StpUtil;
+import com.mobileSE.chatdiary.common.exception.BizError;
+import com.mobileSE.chatdiary.common.exception.BizException;
 import com.mobileSE.chatdiary.common.response.CommonResponse;
 import com.mobileSE.chatdiary.mapper.UserMapper;
 import com.mobileSE.chatdiary.pojo.vo.user.EditUserInfoRequest;
@@ -11,7 +13,12 @@ import com.mobileSE.chatdiary.pojo.vo.user.UserVO;
 import com.mobileSE.chatdiary.svc.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @CrossOrigin(origins = "", allowCredentials = "true")
@@ -22,17 +29,37 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("session")
-    public CommonResponse<?> login(@Valid @RequestBody LoginRequest request) {
+    public CommonResponse<?> login(@Valid @RequestBody LoginRequest request, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+            if (!fieldErrors.isEmpty()) {
+                return CommonResponse.error(BizError.INVALID_INPUT, fieldErrors.get(0).getDefaultMessage());
+            }
+        }
         // Throws BizException if auth failed.
-        userService.login(request.getEmail(), request.getPassword());
-        StpUtil.login(request.getEmail());
-        return CommonResponse.success();
+        UserVO login = userService.login(request.getEmail(), request.getPassword());
+        StpUtil.login(login.getId());
+        return CommonResponse.success(login);
     }
 
     @PostMapping("user")
-    public CommonResponse<?> register(@Valid @RequestBody RegisterRequest request) {
-        userService.register(request.getUsername(), request.getPassword(), request.getEmail());
-        return CommonResponse.success();
+    public CommonResponse<?> register(@Valid @RequestBody RegisterRequest request, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+            if (!fieldErrors.isEmpty()) {
+                return CommonResponse.error(BizError.INVALID_INPUT, fieldErrors.get(0).getDefaultMessage());
+            }
+        }
+        try {
+            userService.register(request.getUsername(), request.getPassword(), request.getEmail());
+        } catch (BizException e) {
+            return CommonResponse.error(e);
+        } catch (Exception e) {
+            return CommonResponse.error(BizError.UNKNOWN_ERROR);
+        }
+        return CommonResponse.success("注册成功");
     }
 
     @DeleteMapping("session")
