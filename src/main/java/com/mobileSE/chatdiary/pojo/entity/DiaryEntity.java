@@ -24,6 +24,7 @@ public class DiaryEntity {
     private Long id;
 
     private String title;
+    @Column(columnDefinition = "LONGTEXT")
     private String content;
     private Date timestamp;
     private String position;
