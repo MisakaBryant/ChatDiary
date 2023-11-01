@@ -1,4 +1,4 @@
-package com.mobileSE.chatdiary.pojo.vo.diary;
+package com.mobileSE.chatdiary.pojo.vo.chat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.JsonParser;
@@ -14,13 +14,10 @@ import java.util.Date;
 import java.util.Locale;
 
 @Data
-public class CreateDiaryRequest {
+public class ChatRequest {
 
-    private String title;
     private String content;
-    private String position;
-    private String type;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", locale = "zh_CN")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", locale = "CHINA")
     @JsonDeserialize(using = CustomDateDeserializer.class)
     private Date timestamp;
 
@@ -28,7 +25,6 @@ public class CreateDiaryRequest {
 
 class CustomDateDeserializer extends JsonDeserializer<Date> {
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.CHINA);
-
     @Override
     public Date deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
         try {

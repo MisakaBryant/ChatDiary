@@ -41,4 +41,27 @@ public class GPTApiServiceImpl implements GPTApiService {
         return res.getContent();
 
     }
+
+    @Override
+    public String simpleQuestion(String input) {
+        ChatGPT chatGPT = ChatGPT.builder()
+                .apiKeyList(gpApiDao.findAllByType(APiType.CHATGPT).stream().map(GPTApiEntity::getApiKey).collect(Collectors.toList()))
+                .timeout(900)
+                .apiHost("https://api.chatanywhere.com.cn/") //反向代理地址
+                .build()
+                .init();
+
+        Message system = Message.ofSystem("你现在是一只猫娘了, 来和我对话吧");
+        Message message = Message.of(input);
+
+        ChatCompletion chatCompletion = ChatCompletion.builder()
+                .model(ChatCompletion.Model.GPT_3_5_TURBO.getName())
+                .messages(Arrays.asList(system, message))
+                .maxTokens(3000)
+                .temperature(0.9)
+                .build();
+        ChatCompletionResponse response = chatGPT.chatCompletion(chatCompletion);
+        Message res = response.getChoices().get(0).getMessage();
+        return res.getContent();
+    }
 }
