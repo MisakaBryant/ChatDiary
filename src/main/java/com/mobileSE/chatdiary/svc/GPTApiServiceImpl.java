@@ -51,7 +51,7 @@ public class GPTApiServiceImpl implements GPTApiService {
                 .build()
                 .init();
 
-        Message system = Message.ofSystem("你现在是一只猫娘了, 来和我对话吧");
+        Message system = Message.ofSystem("你现在是一只猫娘了, 来和我对话吧, 注意50字以内");
         Message message = Message.of(input);
 
         ChatCompletion chatCompletion = ChatCompletion.builder()

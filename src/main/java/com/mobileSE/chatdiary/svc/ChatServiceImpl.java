@@ -31,10 +31,10 @@ public class ChatServiceImpl implements ChatService {
         newMessage.setIsUserMe(true);
         newMessage.setTimestamp(chatRequest.getTimestamp());
         chatDao.save(newMessage);
-        log.info(newMessage.getContent());
+        log.info(newMessage.toString());
         String gptOutPut = gptApiService.simpleQuestion(chatRequest.getContent());
-        log.info(gptOutPut);
         MessageEntity gptOutMessageEntity = MessageEntity.builder().content(gptOutPut).timestamp(new Date()).isUserMe(false).authorId(authorId).build();
+        log.info(gptOutMessageEntity.toString());
         return chatDao.save(gptOutMessageEntity);
     }
 }

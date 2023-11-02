@@ -8,4 +8,4 @@ EXPOSE 8080
 
 ENV SPRING_PROFILES_ACTIVE=product
 
-CMD ["java", "-jar", "app.jar","--spring.profiles.active=product"]
+CMD ["java", "-jar", "app.jar","--spring.profiles.active=docker"]
