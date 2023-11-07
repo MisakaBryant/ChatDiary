@@ -64,4 +64,27 @@ public class GPTApiServiceImpl implements GPTApiService {
         Message res = response.getChoices().get(0).getMessage();
         return res.getContent();
     }
+
+    @Override
+    public String simpleQuestionUsingSchoolApi(String input) {
+        ChatGPT chatGPT = ChatGPT.builder()
+                .apiKey("FAKE_KEY")
+                .timeout(900)
+                .apiHost("http://10.58.0.2:6677/v1/") //反向代理地址
+                .build()
+                .init();
+
+        Message system = Message.ofSystem("你现在是一只猫娘了, 来和我对话吧, 注意50字以内");
+        Message message = Message.of(input);
+
+        ChatCompletion chatCompletion = ChatCompletion.builder()
+                .model(ChatCompletion.Model.GPT_3_5_TURBO.getName())
+                .messages(Arrays.asList(system, message))
+                .maxTokens(3000)
+                .temperature(0.9)
+                .build();
+        ChatCompletionResponse response = chatGPT.chatCompletion(chatCompletion);
+        Message res = response.getChoices().get(0).getMessage();
+        return res.getContent();
+    }
 }
