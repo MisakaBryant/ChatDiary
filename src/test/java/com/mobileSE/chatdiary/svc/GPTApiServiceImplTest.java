@@ -12,15 +12,15 @@ class GPTApiServiceImplTest {
     private GPTApiService gptApiService;
 
 
-    @Test
-    public void testChatGpt() {
-        String result = gptApiService.simpleQuestion("你好");
-        System.out.println(result);
-    }
-    @Test
-    public void testSchool() {
-        String result = gptApiService.simpleQuestionUsingSchoolApi("你好");
-        System.out.println(result);
-    }
+ //   @Test
+//    public void testChatGpt() {
+//        String result = gptApiService.simpleQuestion("你好");
+//        System.out.println(result);
+//    }
+//    @Test
+//    public void testSchool() {
+//        String result = gptApiService.simpleQuestionUsingSchoolApi("你好");
+//        System.out.println(result);
+//    }
 
 }

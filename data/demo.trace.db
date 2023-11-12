@@ -1,0 +1,6 @@
+2023-10-20 16:38:28 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "select u1_0.id,u1_0.email,u1_0.password,u1_0.username from [*]user u1_0 where u1_0.email=?"; expected "identifier"; SQL statement:
+select u1_0.id,u1_0.email,u1_0.password,u1_0.username from user u1_0 where u1_0.email=? [42001-214]
+2023-10-20 16:40:09 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "select u1_0.id,u1_0.email,u1_0.password,u1_0.username from [*]user u1_0 where u1_0.email=?"; expected "identifier"; SQL statement:
+select u1_0.id,u1_0.email,u1_0.password,u1_0.username from user u1_0 where u1_0.email=? [42001-214]
