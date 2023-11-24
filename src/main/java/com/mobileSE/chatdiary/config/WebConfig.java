@@ -8,12 +8,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
 
+    /**
+     * //TODO 在本地跑后端，这里要改成自己文件夹
+     */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/avatars/**")
                 .addResourceLocations("file:/D:/appResource/avatarData/");
     }
-    /**
-     * //TODO 在本地跑后端，这里要改成自己文件夹
-     */
+
 }
