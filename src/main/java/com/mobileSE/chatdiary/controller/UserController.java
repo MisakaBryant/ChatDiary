@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -62,6 +63,18 @@ public class UserController {
         return CommonResponse.success("注册成功");
     }
 
+    //新增功能后端接口, 前端 发送图片, 后端保存, 作为用户头像
+    @PostMapping("/user/avatar")
+    public CommonResponse<?> uploadAvatar(@RequestParam("file") MultipartFile file) {
+        StpUtil.checkLogin();
+        try {
+            String userId = StpUtil.getLoginIdAsString();
+            userService.uploadAvatar(Long.valueOf(userId), file);
+            return CommonResponse.success("头像上传成功");
+        } catch (Exception e) {
+            return CommonResponse.error(BizError.UNKNOWN_ERROR, "头像上传失败");
+        }
+    }
     @DeleteMapping("session")
     public CommonResponse<?> logout() {
         StpUtil.checkLogin();
