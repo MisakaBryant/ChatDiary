@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -16,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChatServiceImpl implements ChatService {
     private final ChatDao chatDao;
-    private final GPTApiService gptApiService;
+    private final ApiService apiService;
 
     @Override
     public List<MessageEntity> getAllChats(Long authorId) {
@@ -32,7 +31,7 @@ public class ChatServiceImpl implements ChatService {
         newMessage.setTimestamp(chatRequest.getTimestamp());
         chatDao.save(newMessage);
         log.info(newMessage.toString());
-        String gptOutPut = gptApiService.simpleQuestion(chatRequest.getContent());
+        String gptOutPut = apiService.simpleQuestion(chatRequest.getContent());
         MessageEntity gptOutMessageEntity = MessageEntity.builder().content(gptOutPut).timestamp(new Date()).isUserMe(false).authorId(authorId).build();
         log.info(gptOutMessageEntity.toString());
         return chatDao.save(gptOutMessageEntity);

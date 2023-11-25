@@ -1,5 +1,8 @@
 package com.mobileSE.chatdiary.svc;
 
+import cn.hutool.json.JSONObject;
+import com.mobileSE.chatdiary.common.exception.BizError;
+import com.mobileSE.chatdiary.common.exception.BizException;
 import com.mobileSE.chatdiary.dao.GPTApiDao;
 import com.mobileSE.chatdiary.pojo.entity.APiType;
 import com.mobileSE.chatdiary.pojo.entity.GPTApiEntity;
@@ -8,14 +11,23 @@ import com.plexpt.chatgpt.entity.chat.ChatCompletion;
 import com.plexpt.chatgpt.entity.chat.ChatCompletionResponse;
 import com.plexpt.chatgpt.entity.chat.Message;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class GPTApiServiceImpl implements GPTApiService {
+@Slf4j
+public class ApiServiceImpl implements ApiService {
     private final GPTApiDao gpApiDao;
 
     @Override
@@ -40,6 +52,58 @@ public class GPTApiServiceImpl implements GPTApiService {
         Message res = response.getChoices().get(0).getMessage();
         return res.getContent();
 
+    }
+
+    @Override
+    public String getImgDescription(MultipartFile image) {
+        //TODO: 为图片生成描述
+        return "";
+    }
+
+    /**
+     * 获取API访问token
+     * 该token有一定的有效期，需要自行管理，当失效时需重新获取.
+     * @return assess_token 示例：
+     * "24.460da4889caad24cccdb1fea17221975.2592000.1491995545.282335-1234567"
+     */
+    public static String getAuth() {
+        String ak = "A74GELiSQGsUM2Mf5MbmZ22Q";
+        String sk = "Gcfu9OkSNdVUX3IZH9hstQ4ZX52OG0xt";
+        // 获取token地址
+        String authHost = "https://aip.baidubce.com/oauth/2.0/token?";
+        String getAccessTokenUrl = authHost
+                // 1. grant_type为固定参数
+                + "grant_type=client_credentials"
+                // 2. 官网获取的 API Key
+                + "&client_id=" + ak
+                // 3. 官网获取的 Secret Key
+                + "&client_secret=" + sk;
+        try {
+            URL realUrl = new URL(getAccessTokenUrl);
+            // 打开和URL之间的连接
+            HttpURLConnection connection = (HttpURLConnection) realUrl.openConnection();
+            connection.setRequestMethod("GET");
+            connection.connect();
+            // 获取所有响应头字段
+            Map<String, List<String>> map = connection.getHeaderFields();
+            // 遍历所有的响应头字段
+            for (String key : map.keySet()) {
+                System.err.println(key + "--->" + map.get(key));
+            }
+            // 定义 BufferedReader输入流来读取URL的响应
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String result = "";
+            String line;
+            while ((line = in.readLine()) != null) {
+                result += line;
+            }
+            log.info("result:" + result);
+            JSONObject jsonObject = new JSONObject(result);
+            return jsonObject.getStr("access_token");
+        } catch (Exception e) {
+            log.error("获取token失败！");
+            throw new BizException(BizError.REQUEST_ERROR);
+        }
     }
 
     @Override

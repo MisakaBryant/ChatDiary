@@ -1,10 +1,8 @@
 package com.mobileSE.chatdiary.controller;
 
-import cn.dev33.satoken.stp.StpUtil;
 import com.mobileSE.chatdiary.common.response.CommonResponse;
-import com.mobileSE.chatdiary.dao.GPTApiDao;
 import com.mobileSE.chatdiary.pojo.vo.gpt.GPTRequest;
-import com.mobileSE.chatdiary.svc.GPTApiService;
+import com.mobileSE.chatdiary.svc.ApiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,12 +11,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/v1/gen/")
 @RequiredArgsConstructor
 public class DiaryGenCotroller {
-    private final GPTApiService gptApiService;
+    private final ApiService apiService;
 
     @GetMapping("diary")
     public CommonResponse<?> getByStringUsingChatGPt(@RequestBody GPTRequest in) {
         //StpUtil.checkLogin();
-        String out = gptApiService.getByStringUsingChatGPT(in.getInput());
+        String out = apiService.getByStringUsingChatGPT(in.getInput());
         return CommonResponse.success(out);
     }
 }

@@ -2,6 +2,7 @@ package com.mobileSE.chatdiary.svc;
 
 import com.mobileSE.chatdiary.pojo.entity.DiaryEntity;
 
+import java.util.Date;
 import java.util.List;
 
 public interface DiaryService {
@@ -19,4 +20,6 @@ public interface DiaryService {
     public List<DiaryEntity> getAllDiaries();
 
     public List<DiaryEntity> getAllDiariesByAuthorId(Long authorId);
+
+    public DiaryEntity getDiaryByAuthorIdAndTimestamp(Long authorId, Date date);
 }

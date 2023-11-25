@@ -1,35 +1,28 @@
 package com.mobileSE.chatdiary.pojo.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import java.util.Date;
 
 @Entity
-@Table(name = "diary")
+@Table(name = "image")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-public class DiaryEntity {
+public class ImageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String title;
-    @Column(columnDefinition = "LONGTEXT")
-    private String content;
+    private String url;
+    private String description;
     private Date timestamp;
-    private String position;
-    private String type;
-    private Long authorId;
+    private Long diaryId;
 }
-

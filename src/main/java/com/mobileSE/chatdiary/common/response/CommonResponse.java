@@ -1,6 +1,5 @@
 package com.mobileSE.chatdiary.common.response;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mobileSE.chatdiary.common.exception.BizError;
 import com.mobileSE.chatdiary.common.exception.BizException;
 import lombok.AccessLevel;
