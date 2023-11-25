@@ -24,9 +24,13 @@ public class UserEntity {
     private Long id;
     @NotNull
     private String username;
+
     @NotNull
     private String password;
     @Email
     @Column(unique = true)
     private String email;
+
+    @Column(name = "avatar_url")
+    private String avatarUrl;
 }
