@@ -10,7 +10,7 @@ import com.mobileSE.chatdiary.pojo.vo.user.EditUserInfoRequest;
 import com.mobileSE.chatdiary.pojo.vo.user.LoginRequest;
 import com.mobileSE.chatdiary.pojo.vo.user.RegisterRequest;
 import com.mobileSE.chatdiary.pojo.vo.user.UserVO;
-import com.mobileSE.chatdiary.svc.UserService;
+import com.mobileSE.chatdiary.svc.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @CrossOrigin(origins = "", allowCredentials = "true")
@@ -72,7 +71,7 @@ public class UserController {
             userService.uploadAvatar(Long.valueOf(userId), file);
             return CommonResponse.success("头像上传成功");
         } catch (Exception e) {
-            return CommonResponse.error(BizError.UNKNOWN_ERROR, "头像上传失败");
+            return CommonResponse.error(BizError.IMG_ERROR, "头像上传失败");
         }
     }
     @DeleteMapping("session")

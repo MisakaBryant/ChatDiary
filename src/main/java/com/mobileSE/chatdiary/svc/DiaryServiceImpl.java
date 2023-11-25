@@ -2,6 +2,7 @@ package com.mobileSE.chatdiary.svc;
 
 import com.mobileSE.chatdiary.dao.DiaryDao;
 import com.mobileSE.chatdiary.pojo.entity.DiaryEntity;
+import com.mobileSE.chatdiary.svc.service.DiaryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

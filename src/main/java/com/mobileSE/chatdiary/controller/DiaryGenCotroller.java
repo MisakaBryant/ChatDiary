@@ -2,7 +2,7 @@ package com.mobileSE.chatdiary.controller;
 
 import com.mobileSE.chatdiary.common.response.CommonResponse;
 import com.mobileSE.chatdiary.pojo.vo.gpt.GPTRequest;
-import com.mobileSE.chatdiary.svc.ApiService;
+import com.mobileSE.chatdiary.svc.service.GPTApiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/v1/gen/")
 @RequiredArgsConstructor
 public class DiaryGenCotroller {
-    private final ApiService apiService;
+    private final GPTApiService apiService;
 
     @GetMapping("diary")
     public CommonResponse<?> getByStringUsingChatGPt(@RequestBody GPTRequest in) {

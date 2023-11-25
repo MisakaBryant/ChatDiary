@@ -6,6 +6,7 @@ import com.mobileSE.chatdiary.common.exception.BizException;
 import com.mobileSE.chatdiary.dao.GPTApiDao;
 import com.mobileSE.chatdiary.pojo.entity.APiType;
 import com.mobileSE.chatdiary.pojo.entity.GPTApiEntity;
+import com.mobileSE.chatdiary.svc.service.GPTApiService;
 import com.plexpt.chatgpt.ChatGPT;
 import com.plexpt.chatgpt.entity.chat.ChatCompletion;
 import com.plexpt.chatgpt.entity.chat.ChatCompletionResponse;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ApiServiceImpl implements ApiService {
+public class GPTApiServiceImpl implements GPTApiService {
     private final GPTApiDao gpApiDao;
 
     @Override
@@ -39,7 +40,7 @@ public class ApiServiceImpl implements ApiService {
                 .build()
                 .init();
 
-        Message system = Message.ofSystem("你现在是一名日记助手, 需要根据我的输入的一天的内容来生成日记, 请直接给出日记");
+        Message system = Message.ofSystem("你现在是一名日记助手, 需要根据我的输入的一天的内容来生成日记, 请直接给出日记, 中文回答");
         Message message = Message.of(input);
 
         ChatCompletion chatCompletion = ChatCompletion.builder()
@@ -115,7 +116,7 @@ public class ApiServiceImpl implements ApiService {
                 .build()
                 .init();
 
-        Message system = Message.ofSystem("你现在是一只猫娘了, 来和我对话吧, 注意50字以内");
+        Message system = Message.ofSystem("你现在是一只猫娘了, 来和我对话吧, 注意50字以内,中文回答");
         Message message = Message.of(input);
 
         ChatCompletion chatCompletion = ChatCompletion.builder()

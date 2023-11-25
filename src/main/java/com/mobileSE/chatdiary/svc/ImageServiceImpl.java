@@ -5,19 +5,26 @@ import cn.hutool.core.codec.Base64;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.mobileSE.chatdiary.common.GiteeImgBed;
+import com.mobileSE.chatdiary.dao.UserDao;
+import com.mobileSE.chatdiary.dao.UserImageDao;
+import com.mobileSE.chatdiary.pojo.entity.UserEntity;
+import com.mobileSE.chatdiary.pojo.entity.UserImageEntity;
+import com.mobileSE.chatdiary.svc.service.ImageService;
+import com.mobileSE.chatdiary.util.ImgBed.GiteeImgBed;
 import com.mobileSE.chatdiary.common.exception.BizError;
 import com.mobileSE.chatdiary.common.exception.BizException;
-import com.mobileSE.chatdiary.dao.ImageDao;
+import com.mobileSE.chatdiary.dao.DiaryImageDao;
 import com.mobileSE.chatdiary.pojo.entity.DiaryEntity;
-import com.mobileSE.chatdiary.pojo.entity.ImageEntity;
+import com.mobileSE.chatdiary.pojo.entity.DiaryImageEntity;
+import com.mobileSE.chatdiary.svc.service.DiaryService;
+import com.mobileSE.chatdiary.svc.service.GPTApiService;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -27,19 +34,19 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 public class ImageServiceImpl implements ImageService {
-    private final ImageDao imageDao;
-    private final ApiService apiService;
+    private final DiaryImageDao diaryImageDao;
+    private final UserImageDao userImageDao;
+    private final UserDao userDao;
+    private final GPTApiService apiService;
     private final DiaryService diaryService;
 
     @Override
-    public void uploadImage(MultipartFile image, Date timestamp) {
+    public String uploadImageByName(MultipartFile image, String fileName) {
         String originalFileName = image.getOriginalFilename();
         //上传图片不存在时
         if (originalFileName == null) {
             throw new BizException(BizError.IMG_ERROR);
         }
-        String suffix = originalFileName.substring(originalFileName.lastIndexOf("."));
-        String fileName = timestamp.getTime() + suffix;
         byte[] bytes;
         try {
             bytes = image.getBytes();
@@ -55,8 +62,7 @@ public class ImageServiceImpl implements ImageService {
         //转存文件路径
         String targetDir = GiteeImgBed.PATH + fileName;
         //设置请求路径
-        String requestUrl = String.format(GiteeImgBed.CREATE_REPOS_URL, GiteeImgBed.OWNER,
-                GiteeImgBed.REPO_NAME, targetDir);
+        String requestUrl = String.format(GiteeImgBed.CREATE_REPOS_URL, GiteeImgBed.OWNER, GiteeImgBed.REPO_NAME, targetDir);
         String resultJson = HttpUtil.post(requestUrl, paramMap);
         log.info(resultJson);
         JSONObject jsonObject = JSONUtil.parseObj(resultJson);
@@ -65,14 +71,45 @@ public class ImageServiceImpl implements ImageService {
             throw new BizException(BizError.REQUEST_ERROR);
         }
         JSONObject content = JSONUtil.parseObj(jsonObject.getObj("content"));
-        String url = content.getStr("download_url");
-        log.info(url);
+        return content.getStr("download_url");
+    }
+
+    /**
+     * 上传日记的图片
+     *
+     * @param image
+     * @param timestamp
+     */
+    @Override
+    public void uploadDiaryImageByDate(MultipartFile image, Date timestamp) {
+        String originalFileName = image.getOriginalFilename();
+        if (originalFileName == null) {
+            throw new BizException(BizError.IMG_ERROR);
+        }
+        String suffix = originalFileName.substring(originalFileName.lastIndexOf("."));
+        String fileName = timestamp.getTime() + suffix;
+        String url = uploadImageByName(image, fileName);
         String description = apiService.getImgDescription(image);
         DiaryEntity diary = diaryService.getDiaryByAuthorIdAndTimestamp(StpUtil.getLoginIdAsLong(), timestamp);
         Long diaryId = diary.getId();
-        imageDao.save(ImageEntity.builder().url(url).description(description).timestamp(timestamp).diaryId(diaryId).build());
-
+        diaryImageDao.save(DiaryImageEntity.builder().url(url).description(description).timestamp(timestamp).diaryId(diaryId).build());
     }
+
+    @Override
+    public void uploadUserImageByUserId(MultipartFile image, Long userId) {
+        String originalFileName = image.getOriginalFilename();
+        if (originalFileName == null) {
+            throw new BizException(BizError.IMG_ERROR);
+        }
+
+        String suffix = originalFileName.substring(originalFileName.lastIndexOf("."));
+        String dataTime = LocalDate.now().toString();
+        String fileName = dataTime + suffix;
+        String url = uploadImageByName(image, fileName);
+        UserImageEntity save = userImageDao.save(UserImageEntity.builder().userId(userId).timestamp(new Date()).url(url).build());
+        userDao.save(userDao.findById(userId).get().setAvatarUrlId(save.getId()));
+    }
+
 
 //    /**
 //     * 删除图片
@@ -129,7 +166,7 @@ public class ImageServiceImpl implements ImageService {
 //    }
 
     @Override
-    public List<ImageEntity> getImageByDiaryId(Long id) {
-        return imageDao.findByDiaryId(id);
+    public List<DiaryImageEntity> getImageByDiaryId(Long id) {
+        return diaryImageDao.findByDiaryId(id);
     }
 }

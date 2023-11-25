@@ -3,6 +3,8 @@ package com.mobileSE.chatdiary.svc;
 import com.mobileSE.chatdiary.dao.ChatDao;
 import com.mobileSE.chatdiary.pojo.entity.MessageEntity;
 import com.mobileSE.chatdiary.pojo.vo.chat.ChatRequest;
+import com.mobileSE.chatdiary.svc.service.ChatService;
+import com.mobileSE.chatdiary.svc.service.GPTApiService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChatServiceImpl implements ChatService {
     private final ChatDao chatDao;
-    private final ApiService apiService;
+    private final GPTApiService apiService;
 
     @Override
     public List<MessageEntity> getAllChats(Long authorId) {

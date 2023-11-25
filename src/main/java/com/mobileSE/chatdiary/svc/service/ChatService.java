@@ -1,4 +1,4 @@
-package com.mobileSE.chatdiary.svc;
+package com.mobileSE.chatdiary.svc.service;
 
 import com.mobileSE.chatdiary.pojo.entity.MessageEntity;
 import com.mobileSE.chatdiary.pojo.vo.chat.ChatRequest;

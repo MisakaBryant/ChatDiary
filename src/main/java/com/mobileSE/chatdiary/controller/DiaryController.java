@@ -6,7 +6,7 @@ import com.mobileSE.chatdiary.mapper.DiaryMapper;
 import com.mobileSE.chatdiary.pojo.entity.DiaryEntity;
 import com.mobileSE.chatdiary.pojo.vo.diary.CreateDiaryRequest;
 import com.mobileSE.chatdiary.pojo.vo.diary.DiaryVO;
-import com.mobileSE.chatdiary.svc.DiaryService;
+import com.mobileSE.chatdiary.svc.service.DiaryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;

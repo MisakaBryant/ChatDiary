@@ -1,4 +1,4 @@
-package com.mobileSE.chatdiary.common;
+package com.mobileSE.chatdiary.util.ImgBed;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
