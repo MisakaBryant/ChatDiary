@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface DiaryImageDao extends JpaRepository<DiaryImageEntity, Long> {
     List<DiaryImageEntity> findByDiaryId(Long authorId);
+
 }

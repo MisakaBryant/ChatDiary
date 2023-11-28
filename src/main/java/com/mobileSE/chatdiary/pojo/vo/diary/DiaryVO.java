@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class DiaryVO {
@@ -13,6 +14,7 @@ public class DiaryVO {
     private String timestamp;
     private String position;
     private String type;
+    private List<String> images;
 
 
 }

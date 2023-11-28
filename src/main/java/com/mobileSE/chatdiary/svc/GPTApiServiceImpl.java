@@ -57,8 +57,8 @@ public class GPTApiServiceImpl implements GPTApiService {
 
     @Override
     public String getImgDescription(MultipartFile image) {
-        //TODO: 为图片生成描述
-        return "";
+
+        return "假装生成了一个照片的描述";
     }
 
     /**

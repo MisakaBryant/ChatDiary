@@ -5,9 +5,9 @@ import cn.hutool.core.codec.Base64;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.mobileSE.chatdiary.dao.DiaryDao;
 import com.mobileSE.chatdiary.dao.UserDao;
 import com.mobileSE.chatdiary.dao.UserImageDao;
-import com.mobileSE.chatdiary.pojo.entity.UserEntity;
 import com.mobileSE.chatdiary.pojo.entity.UserImageEntity;
 import com.mobileSE.chatdiary.svc.service.ImageService;
 import com.mobileSE.chatdiary.util.ImgBed.GiteeImgBed;
@@ -18,17 +18,14 @@ import com.mobileSE.chatdiary.pojo.entity.DiaryEntity;
 import com.mobileSE.chatdiary.pojo.entity.DiaryImageEntity;
 import com.mobileSE.chatdiary.svc.service.DiaryService;
 import com.mobileSE.chatdiary.svc.service.GPTApiService;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -37,8 +34,9 @@ public class ImageServiceImpl implements ImageService {
     private final DiaryImageDao diaryImageDao;
     private final UserImageDao userImageDao;
     private final UserDao userDao;
+    private final DiaryDao diaryDao;
+
     private final GPTApiService apiService;
-    private final DiaryService diaryService;
 
     @Override
     public String uploadImageByName(MultipartFile image, String fileName) {
@@ -75,13 +73,14 @@ public class ImageServiceImpl implements ImageService {
     }
 
     /**
-     * 上传日记的图片
+     * 上传日记的图片, 修改， 上传图片单独作为日记
      *
      * @param image
      * @param timestamp
+     * @param diaryId
      */
     @Override
-    public void uploadDiaryImageByDate(MultipartFile image, Date timestamp) {
+    public void uploadDiaryImageByDate(MultipartFile image, Date timestamp, Long diaryId) {
         String originalFileName = image.getOriginalFilename();
         if (originalFileName == null) {
             throw new BizException(BizError.IMG_ERROR);
@@ -90,9 +89,9 @@ public class ImageServiceImpl implements ImageService {
         String fileName = timestamp.getTime() + suffix;
         String url = uploadImageByName(image, fileName);
         String description = apiService.getImgDescription(image);
-        DiaryEntity diary = diaryService.getDiaryByAuthorIdAndTimestamp(StpUtil.getLoginIdAsLong(), timestamp);
-        Long diaryId = diary.getId();
-        diaryImageDao.save(DiaryImageEntity.builder().url(url).description(description).timestamp(timestamp).diaryId(diaryId).build());
+        DiaryImageEntity save = diaryImageDao.save(DiaryImageEntity.builder().url(url).description(description).timestamp(timestamp).diaryId(diaryId).build());
+        log.info("Uploading image diary:" + save);
+
     }
 
     @Override
