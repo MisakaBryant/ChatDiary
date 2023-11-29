@@ -32,11 +32,15 @@ public class BaiduAipServiceImpl implements BaiduAipService {
 
             int result_num = res.getInt("result_num");
             JSONArray results = res.getJSONArray("result");
-            StringBuilder description = new StringBuilder("keywords:");
+            StringBuilder description = new StringBuilder("keywords: ");
             for (int i = 0; i < result_num; i++) {
                 JSONObject result = results.getJSONObject(i);
+                double score = result.getDouble("score");
+                if (score < 0.4) {  // 识别度低于0.4的不要，这个值后面可以调
+                    continue;
+                }
                 String keyword = result.getString("keyword");
-                description.append(keyword).append(", ");
+                description.append(keyword).append(" ");
             }
 
             log.info(description.toString());
