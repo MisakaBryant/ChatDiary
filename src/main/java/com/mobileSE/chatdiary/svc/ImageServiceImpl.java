@@ -1,31 +1,30 @@
 package com.mobileSE.chatdiary.svc;
 
-import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.codec.Base64;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.mobileSE.chatdiary.dao.DiaryDao;
-import com.mobileSE.chatdiary.dao.UserDao;
-import com.mobileSE.chatdiary.dao.UserImageDao;
-import com.mobileSE.chatdiary.pojo.entity.UserImageEntity;
-import com.mobileSE.chatdiary.svc.service.ImageService;
-import com.mobileSE.chatdiary.util.ImgBed.GiteeImgBed;
 import com.mobileSE.chatdiary.common.exception.BizError;
 import com.mobileSE.chatdiary.common.exception.BizException;
+import com.mobileSE.chatdiary.dao.DiaryDao;
 import com.mobileSE.chatdiary.dao.DiaryImageDao;
-import com.mobileSE.chatdiary.pojo.entity.DiaryEntity;
+import com.mobileSE.chatdiary.dao.UserDao;
+import com.mobileSE.chatdiary.dao.UserImageDao;
 import com.mobileSE.chatdiary.pojo.entity.DiaryImageEntity;
-import com.mobileSE.chatdiary.svc.service.DiaryService;
-import com.mobileSE.chatdiary.svc.service.GPTApiService;
+import com.mobileSE.chatdiary.pojo.entity.UserImageEntity;
+import com.mobileSE.chatdiary.svc.service.BaiduAipService;
+import com.mobileSE.chatdiary.svc.service.ImageService;
+import com.mobileSE.chatdiary.util.ImgBed.GiteeImgBed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +35,7 @@ public class ImageServiceImpl implements ImageService {
     private final UserDao userDao;
     private final DiaryDao diaryDao;
 
-    private final GPTApiService apiService;
+    private final BaiduAipService baiduAipService;
 
     @Override
     public String uploadImageByName(MultipartFile image, String fileName) {
@@ -88,7 +87,7 @@ public class ImageServiceImpl implements ImageService {
         String suffix = originalFileName.substring(originalFileName.lastIndexOf("."));
         String fileName = timestamp.getTime() + suffix;
         String url = uploadImageByName(image, fileName);
-        String description = apiService.getImgDescription(image);
+        String description = baiduAipService.getImgDescription(image);
         DiaryImageEntity save = diaryImageDao.save(DiaryImageEntity.builder().url(url).description(description).timestamp(timestamp).diaryId(diaryId).build());
         log.info("Uploading image diary:" + save);
 

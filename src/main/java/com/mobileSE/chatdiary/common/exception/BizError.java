@@ -13,7 +13,8 @@ public enum BizError {
     INVALID_INPUT(200004, "不合理输入", 400),
     GPT_API_ERROR(200005, "GPT处理错误", 400),
     REQUEST_ERROR(200006, "图片请求有误", 400),
-    IMG_ERROR(200007, "图片上传有误", 400);
+    IMG_ERROR(200007, "图片上传有误", 400),
+    AIP_ERROR(200008, "百度AIP处理错误", 400);
     final int code;
     final String message;
     final int httpCode;

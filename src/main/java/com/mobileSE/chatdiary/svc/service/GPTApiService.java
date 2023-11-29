@@ -6,5 +6,4 @@ public interface GPTApiService {
     String getByStringUsingChatGPT(String input);
     String simpleQuestion(String input);
     String simpleQuestionUsingSchoolApi(String input);
-    String getImgDescription(MultipartFile image);
 }
