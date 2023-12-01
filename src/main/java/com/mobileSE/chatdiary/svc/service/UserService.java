@@ -13,7 +13,11 @@ public interface UserService {
 
     UserEntity findByUserName(String username);
 
-    void editInfo(String username);
+    void editInfo(String email, String useInfo);
+    void editUsername(String email, String username);
+
+    void editPassword(String email, String password);
+
 
     void uploadAvatar(Long userId, MultipartFile file) throws IOException;
 }

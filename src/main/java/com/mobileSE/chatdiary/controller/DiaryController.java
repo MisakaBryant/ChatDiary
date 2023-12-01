@@ -48,7 +48,7 @@ public class DiaryController {
 
         diaries.forEach(x -> x.setImages(diaryImageDao.findByDiaryId(x.getId()).stream().map(DiaryImageEntity::getUrl).collect(Collectors.toList())));
 
-        log.info(diaries.toString());
+
         return CommonResponse.success(diaries);
     }
 }

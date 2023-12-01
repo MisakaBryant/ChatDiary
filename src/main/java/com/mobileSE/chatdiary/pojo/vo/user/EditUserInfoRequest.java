@@ -10,6 +10,7 @@ import lombok.Data;
 public class EditUserInfoRequest {
 
 
+
     @NotNull
-    private String email;
+    private String userInfo;
 }

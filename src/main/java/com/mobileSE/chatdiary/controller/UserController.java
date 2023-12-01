@@ -6,10 +6,7 @@ import com.mobileSE.chatdiary.common.exception.BizError;
 import com.mobileSE.chatdiary.common.exception.BizException;
 import com.mobileSE.chatdiary.common.response.CommonResponse;
 import com.mobileSE.chatdiary.mapper.UserMapper;
-import com.mobileSE.chatdiary.pojo.vo.user.EditUserInfoRequest;
-import com.mobileSE.chatdiary.pojo.vo.user.LoginRequest;
-import com.mobileSE.chatdiary.pojo.vo.user.RegisterRequest;
-import com.mobileSE.chatdiary.pojo.vo.user.UserVO;
+import com.mobileSE.chatdiary.pojo.vo.user.*;
 import com.mobileSE.chatdiary.svc.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -74,6 +71,7 @@ public class UserController {
             return CommonResponse.error(BizError.IMG_ERROR, "头像上传失败");
         }
     }
+
     @DeleteMapping("session")
     public CommonResponse<?> logout() {
         StpUtil.checkLogin();
@@ -87,10 +85,25 @@ public class UserController {
         return CommonResponse.success(UserMapper.INSTANCE.toUserVO(userService.findByUserName(String.valueOf(StpUtil.getLoginId()))));
     }
 
-    @PutMapping("user")
+    @PutMapping("user/info")
     public CommonResponse<?> editInfo(@Valid @RequestBody EditUserInfoRequest request) {
         StpUtil.checkLogin();
-        userService.editInfo(StpUtil.getLoginIdAsString());
+        userService.editInfo(StpUtil.getLoginIdAsString(), request.getUserInfo());
         return CommonResponse.success();
     }
+
+    @PutMapping("user/password")
+    public CommonResponse<?> editPassword(@Valid @RequestBody EditUserPasswordRequest request) {
+        StpUtil.checkLogin();
+        userService.editPassword(StpUtil.getLoginIdAsString(), request.getPassword());
+        return CommonResponse.success();
+    }
+
+    @PutMapping("user/name")
+    public CommonResponse<?> editUserName(@Valid @RequestBody EditUserINameRequest request) {
+        StpUtil.checkLogin();
+        userService.editInfo(StpUtil.getLoginIdAsString(), request.getUsername());
+        return CommonResponse.success();
+    }
+
 }

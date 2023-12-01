@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
         if (user != null) {
             throw new BizException(BizError.EMAIL_EXISTS);
         }
-        userDao.save(UserEntity.builder().username(username).password(SaSecureUtil.md5(password)).email(email).build());
+        userDao.save(UserEntity.builder().userInfo("用户现在啥也没写").username(username).password(SaSecureUtil.md5(password)).email(email).build());
     }
 
     /**
@@ -84,12 +84,21 @@ public class UserServiceImpl implements UserService {
      * @param email 邮箱
      */
     @Override
-    public void editInfo(String email) {
+    public void editInfo(String email, String useInfo) {
         UserEntity user = userDao.findByEmail(email);
-        if (user == null) {
-            throw new BizException(BizError.USER_NOT_FOUND);
-        }
-        userDao.save(user.setEmail(email));
+        userDao.save(user.setUserInfo(useInfo));
+    }
+
+    @Override
+    public void editUsername(String email, String username) {
+        UserEntity user = userDao.findByEmail(email);
+        userDao.save(user.setUsername(username));
+    }
+
+    @Override
+    public void editPassword(String email, String password) {
+        UserEntity user = userDao.findByEmail(email);
+        userDao.save(user.setPassword(SaSecureUtil.md5(password)));
     }
 
     //新增功能后端接口, 前端 发送图片, 后端保存, 作为用户头像

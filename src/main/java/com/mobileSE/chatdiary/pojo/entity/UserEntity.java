@@ -31,5 +31,9 @@ public class UserEntity {
     @Column(unique = true)
     private String email;
 
+    @NotNull
+    @Column(columnDefinition = "VARCHAR(255) DEFAULT '用户啥也没写'")
+    private String userInfo;
+
     private Long avatarUrlId;
 }
