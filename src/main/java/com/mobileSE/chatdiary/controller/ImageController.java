@@ -3,19 +3,15 @@ package com.mobileSE.chatdiary.controller;
 import cn.dev33.satoken.stp.StpUtil;
 import com.mobileSE.chatdiary.common.response.CommonResponse;
 import com.mobileSE.chatdiary.pojo.entity.DiaryEntity;
-import com.mobileSE.chatdiary.pojo.vo.image.ImageUploadRequest;
 import com.mobileSE.chatdiary.svc.service.DiaryService;
 import com.mobileSE.chatdiary.svc.service.ImageService;
-import com.mobileSE.chatdiary.svc.service.GPTApiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 @CrossOrigin(origins = "", allowCredentials = "true")
 @RestController
@@ -23,7 +19,6 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class ImageController {
     private final ImageService imageService;
-    private final GPTApiService apiService;
     private final DiaryService diaryService;
 
     private String removeQuotes(String value) {

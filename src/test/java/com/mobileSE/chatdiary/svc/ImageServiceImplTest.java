@@ -18,8 +18,8 @@ public class ImageServiceImplTest {
 
     @Test
     public void testUploadImage() throws IOException {
-        File img = new File("C:\\Users\\Misaka\\Pictures\\Saved Pictures\\Noelle.jpeg");
-        imageService.uploadUserImageByUserId(new MockMultipartFile("img", img.getName(), "image/jpeg", new FileInputStream(img)), new Date().getTime());
+        File img = new File("C:\\Users\\Misaka\\Pictures\\Saved Pictures\\test.jpg");
+        imageService.uploadDiaryImageByDate(new MockMultipartFile("img", img.getName(), "image/jpg", new FileInputStream(img)), new Date(), 1L);
     }
 
 }

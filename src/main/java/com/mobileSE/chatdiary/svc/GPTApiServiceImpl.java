@@ -55,12 +55,6 @@ public class GPTApiServiceImpl implements GPTApiService {
 
     }
 
-    @Override
-    public String getImgDescription(MultipartFile image) {
-
-        return "假装生成了一个照片的描述";
-    }
-
     /**
      * 获取API访问token
      * 该token有一定的有效期，需要自行管理，当失效时需重新获取.
