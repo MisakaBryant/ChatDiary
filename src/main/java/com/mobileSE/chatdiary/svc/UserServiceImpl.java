@@ -5,6 +5,7 @@ import cn.dev33.satoken.secure.SaSecureUtil;
 import com.mobileSE.chatdiary.dao.UserDao;
 import com.mobileSE.chatdiary.common.exception.BizError;
 import com.mobileSE.chatdiary.common.exception.BizException;
+import com.mobileSE.chatdiary.dao.UserImageDao;
 import com.mobileSE.chatdiary.mapper.UserMapper;
 import com.mobileSE.chatdiary.pojo.entity.UserEntity;
 import com.mobileSE.chatdiary.pojo.vo.user.UserVO;
@@ -29,11 +30,8 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final UserDao userDao;
     private final ImageService imageService;
+    private final UserImageDao userImageDao;
 
-    /**
-     * //TODO 在本地跑后端，这里要改成自己文件夹
-     */
-    private Path fileStorageLocation = Paths.get("D:\\appResource\\avatarData");
 
     /**
      * 用户注册
@@ -52,16 +50,6 @@ public class UserServiceImpl implements UserService {
         userDao.save(UserEntity.builder().userInfo("用户现在啥也没写").username(username).password(SaSecureUtil.md5(password)).email(email).build());
     }
 
-    /**
-     * 根据查询用户信息
-     *
-     * @param email 邮箱
-     * @return 用户实体对象
-     */
-    @Override
-    public UserEntity findByUserName(String email) {
-        return userDao.findByEmail(email);
-    }
 
     /**
      * 用户登录
@@ -78,26 +66,29 @@ public class UserServiceImpl implements UserService {
         return UserMapper.INSTANCE.toUserVO(user);
     }
 
-    /**
-     * 编辑用户信息
-     *
-     * @param email 邮箱
-     */
     @Override
-    public void editInfo(String email, String useInfo) {
-        UserEntity user = userDao.findByEmail(email);
+    public void editInfo(Long userId, String useInfo) {
+        UserEntity user = userDao.findById(userId).get();
         userDao.save(user.setUserInfo(useInfo));
     }
 
     @Override
-    public void editUsername(String email, String username) {
-        UserEntity user = userDao.findByEmail(email);
+    public void editUsername(Long userId, String username) {
+        UserEntity user = userDao.findById(userId).get();
         userDao.save(user.setUsername(username));
     }
 
     @Override
-    public void editPassword(String email, String password) {
-        UserEntity user = userDao.findByEmail(email);
+    public UserVO getUserInfo(Long userId) {
+        UserEntity userEntity = userDao.findById(userId).get();
+        UserVO userVO = UserMapper.INSTANCE.toUserVO(userEntity);
+        userVO.setAvatarUrl(userImageDao.findById(userEntity.getAvatarUrlId()).get().getUrl());
+        return userVO;
+    }
+
+    @Override
+    public void editPassword(Long userId, String password) {
+        UserEntity user = userDao.findById(userId).get();
         userDao.save(user.setPassword(SaSecureUtil.md5(password)));
     }
 

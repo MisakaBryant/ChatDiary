@@ -105,8 +105,14 @@ public class ImageServiceImpl implements ImageService {
         String dataTime = LocalDate.now().toString();
         String fileName = dataTime + suffix;
         String url = uploadImageByName(image, fileName);
-        UserImageEntity save = userImageDao.save(UserImageEntity.builder().userId(userId).timestamp(new Date()).url(url).build());
-        userDao.save(userDao.findById(userId).get().setAvatarUrlId(save.getId()));
+        List<UserImageEntity> byUserId = userImageDao.findByUserId(userId);
+        if (byUserId.isEmpty()) {
+            UserImageEntity save = userImageDao.save(UserImageEntity.builder().userId(userId).timestamp(new Date()).url(url).build());
+            userDao.save(userDao.findById(userId).get().setAvatarUrlId(save.getId()));
+        } else {
+            UserImageEntity userImageEntity = byUserId.get(0);
+            userImageDao.save(userImageEntity.setUrl(url));
+        }
     }
 
 

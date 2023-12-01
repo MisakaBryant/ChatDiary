@@ -61,7 +61,7 @@ public class UserController {
 
     //新增功能后端接口, 前端 发送图片, 后端保存, 作为用户头像
     @PostMapping("/user/avatar")
-    public CommonResponse<?> uploadAvatar(@RequestParam("file") MultipartFile file) {
+    public CommonResponse<?> uploadAvatar(@RequestParam("image") MultipartFile file) {
         StpUtil.checkLogin();
         try {
             String userId = StpUtil.getLoginIdAsString();
@@ -82,27 +82,73 @@ public class UserController {
     @GetMapping("user")
     public CommonResponse<UserVO> userInfo() {
         StpUtil.checkLogin();
-        return CommonResponse.success(UserMapper.INSTANCE.toUserVO(userService.findByUserName(String.valueOf(StpUtil.getLoginId()))));
+
+        UserVO userInfo;
+        try {
+            userInfo = userService.getUserInfo(StpUtil.getLoginIdAsLong());
+        } catch (BizException e) {
+            return CommonResponse.error(e);
+        } catch (Exception e) {
+            return CommonResponse.error(BizError.UNKNOWN_ERROR);
+        }
+        return CommonResponse.success(userInfo);
     }
 
     @PutMapping("user/info")
-    public CommonResponse<?> editInfo(@Valid @RequestBody EditUserInfoRequest request) {
+    public CommonResponse<?> editInfo(@Valid @RequestBody EditUserInfoRequest request, BindingResult bindingResult) {
         StpUtil.checkLogin();
-        userService.editInfo(StpUtil.getLoginIdAsString(), request.getUserInfo());
+        if (bindingResult.hasErrors()) {
+            List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+            if (!fieldErrors.isEmpty()) {
+                return CommonResponse.error(BizError.INVALID_INPUT, fieldErrors.get(0).getDefaultMessage());
+            }
+        }
+        try {
+            userService.editInfo(StpUtil.getLoginIdAsLong(), request.getUserInfo());
+        } catch (BizException e) {
+            return CommonResponse.error(e);
+        } catch (Exception e) {
+            return CommonResponse.error(BizError.UNKNOWN_ERROR);
+        }
         return CommonResponse.success();
     }
 
     @PutMapping("user/password")
-    public CommonResponse<?> editPassword(@Valid @RequestBody EditUserPasswordRequest request) {
+    public CommonResponse<?> editPassword(@Valid @RequestBody EditUserPasswordRequest request, BindingResult bindingResult) {
         StpUtil.checkLogin();
-        userService.editPassword(StpUtil.getLoginIdAsString(), request.getPassword());
+        if (bindingResult.hasErrors()) {
+            List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+            if (!fieldErrors.isEmpty()) {
+                return CommonResponse.error(BizError.INVALID_INPUT, fieldErrors.get(0).getDefaultMessage());
+            }
+        }
+        try {
+            userService.editPassword(StpUtil.getLoginIdAsLong(), request.getPassword());
+
+        } catch (BizException e) {
+            return CommonResponse.error(e);
+        } catch (Exception e) {
+            return CommonResponse.error(BizError.UNKNOWN_ERROR);
+        }
         return CommonResponse.success();
     }
 
     @PutMapping("user/name")
-    public CommonResponse<?> editUserName(@Valid @RequestBody EditUserINameRequest request) {
+    public CommonResponse<?> editUserName(@Valid @RequestBody EditUserINameRequest request, BindingResult bindingResult) {
         StpUtil.checkLogin();
-        userService.editInfo(StpUtil.getLoginIdAsString(), request.getUsername());
+        if (bindingResult.hasErrors()) {
+            List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+            if (!fieldErrors.isEmpty()) {
+                return CommonResponse.error(BizError.INVALID_INPUT, fieldErrors.get(0).getDefaultMessage());
+            }
+        }
+        try {
+            userService.editUsername(StpUtil.getLoginIdAsLong(), request.getUsername());
+        } catch (BizException e) {
+            return CommonResponse.error(e);
+        } catch (Exception e) {
+            return CommonResponse.error(BizError.UNKNOWN_ERROR);
+        }
         return CommonResponse.success();
     }
 

@@ -10,13 +10,14 @@ public interface UserService {
     UserVO login(String username, String password);
 
     void register(String username, String password, String email);
+    
+    void editInfo(Long userId, String useInfo);
 
-    UserEntity findByUserName(String username);
+    void editUsername(Long userId, String username);
 
-    void editInfo(String email, String useInfo);
-    void editUsername(String email, String username);
+    UserVO getUserInfo(Long userId);
 
-    void editPassword(String email, String password);
+    void editPassword(Long userId, String password);
 
 
     void uploadAvatar(Long userId, MultipartFile file) throws IOException;
