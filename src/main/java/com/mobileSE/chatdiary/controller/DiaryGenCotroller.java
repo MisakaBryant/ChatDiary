@@ -14,7 +14,7 @@ public class DiaryGenCotroller {
     private final GPTApiService apiService;
 
     @GetMapping("diary")
-    public CommonResponse<?> getByStringUsingChatGPt(@RequestBody GPTRequest in) {
+    public CommonResponse<?> getByStringUsingChatGPT(@RequestBody GPTRequest in) {
         //StpUtil.checkLogin();
         String out = apiService.getByStringUsingChatGPT(in.getInput());
         return CommonResponse.success(out);

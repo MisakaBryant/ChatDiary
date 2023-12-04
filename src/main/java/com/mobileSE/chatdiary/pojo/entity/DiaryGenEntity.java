@@ -1,8 +1,6 @@
 package com.mobileSE.chatdiary.pojo.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,8 +18,10 @@ import java.time.LocalDate;
 @Accessors(chain = true)
 public class DiaryGenEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDate date;
+    @Column(columnDefinition = "LONGTEXT")
     private String content;
     private String title;
 }
