@@ -8,10 +8,12 @@ import com.mobileSE.chatdiary.common.exception.BizException;
 import com.mobileSE.chatdiary.dao.UserImageDao;
 import com.mobileSE.chatdiary.mapper.UserMapper;
 import com.mobileSE.chatdiary.pojo.entity.UserEntity;
+import com.mobileSE.chatdiary.pojo.entity.UserImageEntity;
 import com.mobileSE.chatdiary.pojo.vo.user.UserVO;
 import com.mobileSE.chatdiary.svc.service.ImageService;
 import com.mobileSE.chatdiary.svc.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +28,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserDao userDao;
@@ -82,7 +85,15 @@ public class UserServiceImpl implements UserService {
     public UserVO getUserInfo(Long userId) {
         UserEntity userEntity = userDao.findById(userId).get();
         UserVO userVO = UserMapper.INSTANCE.toUserVO(userEntity);
-        userVO.setAvatarUrl(userImageDao.findById(userEntity.getAvatarUrlId()).get().getUrl());
+        String url = null;
+        if (userEntity.getAvatarUrlId() != null) {
+            Optional<UserImageEntity> byId = userImageDao.findById(userEntity.getAvatarUrlId());
+            if (byId.isPresent()) {
+                url = byId.get().getUrl();
+            }
+        }
+        userVO.setAvatarUrl(url);
+        log.debug(userVO.toString());
         return userVO;
     }
 

@@ -21,5 +21,4 @@ public interface DiaryService {
 
     public List<DiaryEntity> getAllDiariesByAuthorId(Long authorId);
 
-    public DiaryEntity getDiaryByAuthorIdAndTimestamp(Long authorId, Date date);
 }

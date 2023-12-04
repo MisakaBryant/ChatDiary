@@ -47,7 +47,4 @@ public class DiaryServiceImpl implements DiaryService {
         return diaryDao.findByAuthorId(authorId);
     }
 
-    public DiaryEntity getDiaryByAuthorIdAndTimestamp(Long authorId, Date timestamp) {
-        return diaryDao.findByAuthorIdAndTimestamp(authorId, timestamp);
-    }
 }

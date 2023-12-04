@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "diarygen")
@@ -21,7 +21,7 @@ import java.util.Date;
 public class DiaryGenEntity {
     @Id
     private Long id;
-    private Date date;
+    private LocalDate date;
     private String content;
     private String title;
 }

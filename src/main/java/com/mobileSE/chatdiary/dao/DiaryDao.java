@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface DiaryDao extends JpaRepository<DiaryEntity, Long> {
     List<DiaryEntity> findByAuthorId(Long authorId);
-    DiaryEntity findByAuthorIdAndTimestamp(Long authorId, Date timestamp);
+
 }

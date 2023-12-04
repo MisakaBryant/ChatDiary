@@ -15,6 +15,7 @@ import com.mobileSE.chatdiary.pojo.entity.UserImageEntity;
 import com.mobileSE.chatdiary.svc.service.BaiduAipService;
 import com.mobileSE.chatdiary.svc.service.ImageService;
 import com.mobileSE.chatdiary.util.ImgBed.GiteeImgBed;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -101,8 +102,8 @@ public class ImageServiceImpl implements ImageService {
         }
 
         String suffix = originalFileName.substring(originalFileName.lastIndexOf("."));
-        String dataTime = LocalDate.now().toString();
-        String fileName = dataTime + suffix;
+        String dataTime = new Date().toString();
+        String fileName = userId + dataTime + suffix;
         String url = uploadImageByName(image, fileName);
         List<UserImageEntity> byUserId = userImageDao.findByUserId(userId);
         if (byUserId.isEmpty()) {
