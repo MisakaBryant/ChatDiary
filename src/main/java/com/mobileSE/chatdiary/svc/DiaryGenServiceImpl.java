@@ -16,13 +16,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -49,21 +47,33 @@ public class DiaryGenServiceImpl implements DiaryGenService {
             if (Objects.equals(diary.getType(), "IMAGE")) {
                 List<DiaryImageEntity> byDiaryId = diaryImageDao.findByDiaryId(diary.getId());
                 imageDescriptions.addAll(byDiaryId.stream().map(DiaryImageEntity::getDescription).toList());
-            } else if (Objects.equals(diary.getType(), "TEXT")) {
+            } else if (Objects.equals(diary.getType(), "TXT")) {
                 contents.add(diary.getContent() + "， 地点是" + diary.getPosition() + " 时间是" + diary.getTimestamp());
             }
         });
         StringBuilder sb = new StringBuilder();
-        sb.append("日记里面有以下的图片：");
-        imageDescriptions.forEach(it -> {
-            sb.append(it).append("\n");
-        });
-        sb.append("日记里面发生了如下的事情： ");
-        contents.forEach(it -> sb.append(it).append("\n"));
-        String s = gptApiService.simpleQuestionWithSystem("我想要生成一个日记,你需要完成日记的标题和内容,我等一下要用" +
-                "String title = s.substring(0, s.indexOf('\\n'))来获取标题， 用String content = s.substring(s.indexOf('\\n') + 1)来获取内容，所以第一行标题，后面是内容，千万不要主观联想，把内容用语言组织起来，好玩联系的内容就抛弃他 不要超过250字\n", sb.toString());
-        String title = s.substring(0, s.indexOf('\n'));
-        String content = s.substring(s.indexOf('\n') + 1);
+        if (!imageDescriptions.isEmpty()) {
+            sb.append("日记里面有以下的图片：");
+            imageDescriptions.forEach(it -> {
+                sb.append(it).append("\n");
+            });
+        }
+        if (!contents.isEmpty()) {
+            sb.append("日记里面发生了如下的事情： ");
+            contents.forEach(it -> sb.append(it).append("\n"));
+        }
+        String s;
+        String title;
+        String content;
+        if (sb.isEmpty()) {
+            s = gptApiService.simpleQuestionWithSystem("我想要生成一个日记,你需要完成日记的标题和内容,我等一下要用" + "String title = s.substring(0, s.indexOf('\\n'))来获取标题， 用String content = s.substring(s.indexOf('\\n') + 1)来获取内容，所以第一行标题，后面是内容，千万不要主观联想，把内容用语言组织起来，好玩联系的内容就抛弃他 不要超过250字\n", sb.toString());
+            title = s.substring(0, s.indexOf('\n'));
+            content = s.substring(s.indexOf('\n') + 1);
+        } else {
+            title = "今天没有写日记哦";
+            content = "今天没有写日记哦";
+        }
+
         DiaryGenEntity save = diaryGenDao.save(DiaryGenEntity.builder().title(title).content(content).date(date).build());
         log.info(save.toString());
         return save;
@@ -88,4 +98,29 @@ public class DiaryGenServiceImpl implements DiaryGenService {
         Optional<DiaryGenEntity> byDate = diaryGenDao.findByDate(date);
         return byDate.map(this::toDiaryGenVo).orElseGet(() -> toDiaryGenVo(genDiary(userId, date)));
     }
+
+    @Override
+    public List<DiaryGenVO> getDiaryDateDetail(Long userId, int numberOfDiary) {
+        List<DiaryEntity> byAuthorId = diaryDao.findByAuthorId(userId);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        List<DiaryGenVO> dates = new ArrayList<>();
+
+        Set<String> dateStringSet = new HashSet<>();
+        dateStringSet.add(dateFormat.format(new Date()));
+        int left = numberOfDiary;
+        for (DiaryEntity diaryEntity : byAuthorId) {
+            String format = dateFormat.format(diaryEntity.getTimestamp());
+            if (!dateStringSet.contains(format)) {
+                dates.add(genDiaryVO(userId, LocalDate.parse(format)));
+                dateStringSet.add(format);
+                left--;
+                if (left == 0) {
+                    break;
+                }
+            }
+        }
+        return dates;
+    }
+
+
 }
