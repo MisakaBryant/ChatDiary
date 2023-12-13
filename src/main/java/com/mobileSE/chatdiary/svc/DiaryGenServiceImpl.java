@@ -34,7 +34,7 @@ public class DiaryGenServiceImpl implements DiaryGenService {
     @Override
     public DiaryGenEntity genDiary(Long userId, LocalDate date) {
 
-        Optional<DiaryGenEntity> byDate = diaryGenDao.findByDate(date);
+        Optional<DiaryGenEntity> byDate = diaryGenDao.findByDateAndAuthorId(date, userId);
         if (byDate.isPresent()) return byDate.get();
         List<DiaryEntity> byAuthorId = diaryDao.findByAuthorId(userId);
         List<DiaryEntity> matchingDiaries = byAuthorId.stream().filter(diary -> {
@@ -76,7 +76,7 @@ public class DiaryGenServiceImpl implements DiaryGenService {
             content = "今天没有写日记哦";
         }
         log.info("保存的时间是：" + date);
-        DiaryGenEntity save = diaryGenDao.saveAndFlush(DiaryGenEntity.builder().title(title).content(content).date(date).build());
+        DiaryGenEntity save = diaryGenDao.saveAndFlush(DiaryGenEntity.builder().title(title).content(content).date(date).authorId(userId).build());
         log.info(save.toString());
         return save;
     }
@@ -97,8 +97,8 @@ public class DiaryGenServiceImpl implements DiaryGenService {
 
     @Override
     public DiaryGenVO genDiaryVO(Long userId, LocalDate date) {
-        Optional<DiaryGenEntity> byDate = diaryGenDao.findByDate(date);
-        log.info("genDiaryVO" + byDate.toString());
+        Optional<DiaryGenEntity> byDate = diaryGenDao.findByDateAndAuthorId(date, userId);
+        log.info("userId " + userId + " date " + date + " genDiaryVo");
         if (byDate.isEmpty()) {
             return toDiaryGenVo(genDiary(userId, date));
         } else {
@@ -113,7 +113,7 @@ public class DiaryGenServiceImpl implements DiaryGenService {
         List<DiaryGenVO> dates = new ArrayList<>();
         Set<String> dateStringSet = new HashSet<>();
         dateStringSet.add(dateFormat.format(new Date()));
-        log.info("服务器今天的时间是" + dateFormat.format(new Date()));
+        log.info("getDiaryDateDetail" + dateFormat.format(new Date()));
         int left = numberOfDiary;
         for (DiaryEntity diaryEntity : byAuthorId) {
             String format = dateFormat.format(diaryEntity.getTimestamp());

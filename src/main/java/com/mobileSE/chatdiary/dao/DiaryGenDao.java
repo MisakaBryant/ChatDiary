@@ -11,4 +11,5 @@ public interface DiaryGenDao extends JpaRepository<DiaryGenEntity, Long> {
     Optional<DiaryGenEntity> findByDate(LocalDate date);
     List<DiaryGenEntity> findByAuthorId(Long authorId);
 
+    Optional<DiaryGenEntity> findByDateAndAuthorId(LocalDate date,Long authorId);
 }
