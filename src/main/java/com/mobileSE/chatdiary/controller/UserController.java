@@ -5,7 +5,6 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.mobileSE.chatdiary.common.exception.BizError;
 import com.mobileSE.chatdiary.common.exception.BizException;
 import com.mobileSE.chatdiary.common.response.CommonResponse;
-import com.mobileSE.chatdiary.mapper.UserMapper;
 import com.mobileSE.chatdiary.pojo.vo.user.*;
 import com.mobileSE.chatdiary.svc.service.UserService;
 import jakarta.validation.Valid;

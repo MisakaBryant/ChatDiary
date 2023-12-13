@@ -24,4 +24,6 @@ public class DiaryGenEntity {
     @Column(columnDefinition = "LONGTEXT")
     private String content;
     private String title;
+    private Long authorId;
+
 }

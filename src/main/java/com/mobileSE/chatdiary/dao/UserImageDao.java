@@ -1,6 +1,5 @@
 package com.mobileSE.chatdiary.dao;
 
-import com.mobileSE.chatdiary.pojo.entity.DiaryImageEntity;
 import com.mobileSE.chatdiary.pojo.entity.UserImageEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 

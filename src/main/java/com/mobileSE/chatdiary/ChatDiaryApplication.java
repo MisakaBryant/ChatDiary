@@ -14,7 +14,9 @@ public class ChatDiaryApplication {
     void init() {
         TimeZone.setDefault(TimeZone.getTimeZone("GMT+8"));
     }
+
     public static void main(String[] args) {
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
         SpringApplication.run(ChatDiaryApplication.class, args);
     }
 

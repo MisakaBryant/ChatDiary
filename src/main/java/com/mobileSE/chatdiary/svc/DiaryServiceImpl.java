@@ -6,7 +6,6 @@ import com.mobileSE.chatdiary.svc.service.DiaryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 
 @Service

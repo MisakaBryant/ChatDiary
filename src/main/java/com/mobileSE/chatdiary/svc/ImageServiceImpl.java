@@ -15,13 +15,11 @@ import com.mobileSE.chatdiary.pojo.entity.UserImageEntity;
 import com.mobileSE.chatdiary.svc.service.BaiduAipService;
 import com.mobileSE.chatdiary.svc.service.ImageService;
 import com.mobileSE.chatdiary.util.ImgBed.GiteeImgBed;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;

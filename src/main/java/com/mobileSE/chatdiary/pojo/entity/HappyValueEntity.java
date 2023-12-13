@@ -7,25 +7,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
-@Table(name = "diary")
+@Table(name = "happyvalue")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-public class DiaryEntity {
+public class HappyValueEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String title;
-    @Column(columnDefinition = "LONGTEXT")
-    private String content;
-    private Date timestamp;
-    private String position;
-    private String type;
-    private Long authorId;
+    private Long AuthorId;
+    private LocalDate startDate;
+    private Integer value;
 }
-

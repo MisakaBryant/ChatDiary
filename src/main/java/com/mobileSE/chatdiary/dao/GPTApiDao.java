@@ -2,7 +2,6 @@ package com.mobileSE.chatdiary.dao;
 
 import com.mobileSE.chatdiary.pojo.entity.APiType;
 import com.mobileSE.chatdiary.pojo.entity.GPTApiEntity;
-import com.mobileSE.chatdiary.pojo.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

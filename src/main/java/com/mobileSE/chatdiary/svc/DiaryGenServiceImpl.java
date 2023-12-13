@@ -1,8 +1,7 @@
 package com.mobileSE.chatdiary.svc;
 
-import cn.hutool.log.Log;
-import com.mobileSE.chatdiary.dao.DiaryGenDao;
 import com.mobileSE.chatdiary.dao.DiaryDao;
+import com.mobileSE.chatdiary.dao.DiaryGenDao;
 import com.mobileSE.chatdiary.dao.DiaryImageDao;
 import com.mobileSE.chatdiary.mapper.DiaryGenMapper;
 import com.mobileSE.chatdiary.pojo.entity.DiaryEntity;
@@ -34,10 +33,13 @@ public class DiaryGenServiceImpl implements DiaryGenService {
 
     @Override
     public DiaryGenEntity genDiary(Long userId, LocalDate date) {
+
+        Optional<DiaryGenEntity> byDate = diaryGenDao.findByDate(date);
+        if (byDate.isPresent()) return byDate.get();
         List<DiaryEntity> byAuthorId = diaryDao.findByAuthorId(userId);
         List<DiaryEntity> matchingDiaries = byAuthorId.stream().filter(diary -> {
             Instant instant = diary.getTimestamp().toInstant();
-            LocalDate diaryDate = instant.atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDate diaryDate = instant.atZone(ZoneId.of("Asia/Shanghai")).toLocalDate();
             return diaryDate.equals(date);
         }).toList();
         List<String> imageDescriptions = new ArrayList<String>();
@@ -65,7 +67,7 @@ public class DiaryGenServiceImpl implements DiaryGenService {
         String s;
         String title;
         String content;
-        if (sb.isEmpty()) {
+        if (!sb.isEmpty()) {
             s = gptApiService.simpleQuestionWithSystem("我想要生成一个日记,你需要完成日记的标题和内容,我等一下要用" + "String title = s.substring(0, s.indexOf('\\n'))来获取标题， 用String content = s.substring(s.indexOf('\\n') + 1)来获取内容，所以第一行标题，后面是内容，千万不要主观联想，把内容用语言组织起来，好玩联系的内容就抛弃他 不要超过250字\n", sb.toString());
             title = s.substring(0, s.indexOf('\n'));
             content = s.substring(s.indexOf('\n') + 1);
@@ -73,19 +75,19 @@ public class DiaryGenServiceImpl implements DiaryGenService {
             title = "今天没有写日记哦";
             content = "今天没有写日记哦";
         }
-
-        DiaryGenEntity save = diaryGenDao.save(DiaryGenEntity.builder().title(title).content(content).date(date).build());
+        log.info("保存的时间是：" + date);
+        DiaryGenEntity save = diaryGenDao.saveAndFlush(DiaryGenEntity.builder().title(title).content(content).date(date).build());
         log.info(save.toString());
         return save;
     }
 
     private DiaryGenVO toDiaryGenVo(DiaryGenEntity entity) {
         DiaryGenVO diaryGenVO = DiaryGenMapper.INSTANCE.toDiaryGenVO(entity);
-        List<DiaryEntity> byAuthorId = diaryDao.findByAuthorId(entity.getId());
+        List<DiaryEntity> byAuthorId = diaryDao.findByAuthorId(entity.getAuthorId());
         List<String> imageUrls = new ArrayList<String>();
         List<DiaryEntity> matchingDiaries = byAuthorId.stream().filter(diary -> {
             Instant instant = diary.getTimestamp().toInstant();
-            LocalDate diaryDate = instant.atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDate diaryDate = instant.atZone(ZoneId.of("Asia/Shanghai")).toLocalDate();
             return diaryDate.equals(entity.getDate());
         }).toList();
         matchingDiaries.forEach(diary -> imageUrls.addAll(diaryImageDao.findByDiaryId(diary.getId()).stream().map(DiaryImageEntity::getUrl).toList()));
@@ -96,7 +98,12 @@ public class DiaryGenServiceImpl implements DiaryGenService {
     @Override
     public DiaryGenVO genDiaryVO(Long userId, LocalDate date) {
         Optional<DiaryGenEntity> byDate = diaryGenDao.findByDate(date);
-        return byDate.map(this::toDiaryGenVo).orElseGet(() -> toDiaryGenVo(genDiary(userId, date)));
+        log.info("genDiaryVO" + byDate.toString());
+        if (byDate.isEmpty()) {
+            return toDiaryGenVo(genDiary(userId, date));
+        } else {
+            return toDiaryGenVo(byDate.get());
+        }
     }
 
     @Override
@@ -104,9 +111,9 @@ public class DiaryGenServiceImpl implements DiaryGenService {
         List<DiaryEntity> byAuthorId = diaryDao.findByAuthorId(userId);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         List<DiaryGenVO> dates = new ArrayList<>();
-
         Set<String> dateStringSet = new HashSet<>();
         dateStringSet.add(dateFormat.format(new Date()));
+        log.info("服务器今天的时间是" + dateFormat.format(new Date()));
         int left = numberOfDiary;
         for (DiaryEntity diaryEntity : byAuthorId) {
             String format = dateFormat.format(diaryEntity.getTimestamp());

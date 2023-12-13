@@ -2,9 +2,9 @@ package com.mobileSE.chatdiary.svc;
 
 
 import cn.dev33.satoken.secure.SaSecureUtil;
-import com.mobileSE.chatdiary.dao.UserDao;
 import com.mobileSE.chatdiary.common.exception.BizError;
 import com.mobileSE.chatdiary.common.exception.BizException;
+import com.mobileSE.chatdiary.dao.UserDao;
 import com.mobileSE.chatdiary.dao.UserImageDao;
 import com.mobileSE.chatdiary.mapper.UserMapper;
 import com.mobileSE.chatdiary.pojo.entity.UserEntity;
@@ -15,16 +15,9 @@ import com.mobileSE.chatdiary.svc.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
