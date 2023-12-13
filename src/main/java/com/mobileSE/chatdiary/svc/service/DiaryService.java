@@ -2,7 +2,6 @@ package com.mobileSE.chatdiary.svc.service;
 
 import com.mobileSE.chatdiary.pojo.entity.DiaryEntity;
 
-import java.util.Date;
 import java.util.List;
 
 public interface DiaryService {

@@ -14,7 +14,9 @@ public enum BizError {
     GPT_API_ERROR(200005, "GPT处理错误", 400),
     REQUEST_ERROR(200006, "图片请求有误", 400),
     IMG_ERROR(200007, "图片上传有误", 400),
-    AIP_ERROR(200008, "百度AIP处理错误", 400);
+    AIP_ERROR(200008, "百度AIP处理错误", 400),
+    DIARYGEN_ERROR(200009, "生成日记过多", 400);
+
     final int code;
     final String message;
     final int httpCode;

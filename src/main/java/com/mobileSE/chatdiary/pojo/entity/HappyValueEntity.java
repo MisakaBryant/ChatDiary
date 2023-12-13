@@ -20,7 +20,7 @@ public class HappyValueEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long AuthorId;
+    private Long authorId;
     private LocalDate startDate;
     private Integer value;
 }

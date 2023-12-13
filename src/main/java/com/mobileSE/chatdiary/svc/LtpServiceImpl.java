@@ -1,5 +1,7 @@
 package com.mobileSE.chatdiary.svc;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.mobileSE.chatdiary.controller.ApiController.LtpController;
 import com.mobileSE.chatdiary.svc.service.LtpService;
 import lombok.RequiredArgsConstructor;
@@ -31,12 +33,26 @@ public class LtpServiceImpl implements LtpService {
     }
 
     @Override
-    public String callLtpApi(String text) {
+    public Integer callLtpApi(String text) {
 
         String curTime = System.currentTimeMillis() / 1000L + "";
         String paramBase64 = "eyJ0eXBlIjoiZGVwZW5kZW50In0=";
         String checkSum = DigestUtils.md5Hex(apiKey + curTime + paramBase64);
-        String body = "text=" + urlEncode(text);
-        return ltpController.call(appId, curTime, paramBase64, checkSum, body);
+        //支持到500字节,算一个中文4个字节
+        String body = "text=" + urlEncode(truncateToBytes(text, 125));
+        Gson gson = new Gson();
+        String call = ltpController.call(appId, curTime, paramBase64, checkSum, body);
+        log.info("callLtpApi: " + call + " , body: " + text);
+        JsonObject jsonObject = gson.fromJson(call, JsonObject.class);
+        double score = jsonObject.getAsJsonObject("data").get("score").getAsDouble() * 100;
+        return Math.toIntExact(Math.round(score));
+    }
+
+    private static String truncateToBytes(String text, int length) {
+        if (text.length() <= length) {
+            return text;
+        } else {
+            return text.substring(0, length);
+        }
     }
 }

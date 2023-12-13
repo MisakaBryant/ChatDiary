@@ -1,6 +1,5 @@
 package com.mobileSE.chatdiary.svc.service;
 
-import com.mobileSE.chatdiary.pojo.entity.UserEntity;
 import com.mobileSE.chatdiary.pojo.vo.user.UserVO;
 import org.springframework.web.multipart.MultipartFile;
 
