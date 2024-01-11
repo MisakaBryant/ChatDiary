@@ -8,11 +8,12 @@ import com.mobileSE.chatdiary.pojo.entity.DiaryEntity;
 import com.mobileSE.chatdiary.pojo.entity.DiaryGenEntity;
 import com.mobileSE.chatdiary.pojo.entity.DiaryImageEntity;
 import com.mobileSE.chatdiary.pojo.vo.diary.DiaryGenVO;
-import com.mobileSE.chatdiary.svc.service.BaiduAipService;
 import com.mobileSE.chatdiary.svc.service.DiaryGenService;
 import com.mobileSE.chatdiary.svc.service.GPTApiService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -22,16 +23,17 @@ import java.time.ZoneId;
 import java.util.*;
 
 @Service
+@CacheConfig(cacheNames = "diary")
 @Slf4j
 @RequiredArgsConstructor
 public class DiaryGenServiceImpl implements DiaryGenService {
     private final DiaryDao diaryDao;
     private final DiaryGenDao diaryGenDao;
     private final DiaryImageDao diaryImageDao;
-    private final BaiduAipService baiduAipService;
     private final GPTApiService gptApiService;
 
     @Override
+    @Cacheable(key = "#userId + #date")
     public DiaryGenEntity genDiary(Long userId, LocalDate date) {
 
         Optional<DiaryGenEntity> byDate = diaryGenDao.findByDateAndAuthorId(date, userId);
@@ -96,6 +98,7 @@ public class DiaryGenServiceImpl implements DiaryGenService {
     }
 
     @Override
+    @Cacheable(key = "#userId + #date")
     public DiaryGenVO genDiaryVO(Long userId, LocalDate date) {
         Optional<DiaryGenEntity> byDate = diaryGenDao.findByDateAndAuthorId(date, userId);
         log.info("userId " + userId + " date " + date + " genDiaryVo");
