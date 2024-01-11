@@ -11,6 +11,9 @@ import com.mobileSE.chatdiary.pojo.vo.diary.DiaryVO;
 import com.mobileSE.chatdiary.svc.service.DiaryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +27,15 @@ import java.util.stream.Collectors;
 public class DiaryController {
     private final DiaryService diaryService;
     private final DiaryImageDao diaryImageDao;
+
+    @RabbitListener(queues = "diary_queue")
+    public void receiveDiary(CreateDiaryRequest createDiaryRequest) {
+        // 使用 diaryService 创建日记
+        DiaryEntity diary = DiaryEntity.builder().authorId((Long.valueOf("" + StpUtil.getLoginId()))).position(createDiaryRequest.getPosition()).type(createDiaryRequest.getType()).content(createDiaryRequest.getContent()).timestamp(createDiaryRequest.getTimestamp()).title(createDiaryRequest.getTitle()).build();
+
+        DiaryEntity diaryEntity = diaryService.createDiary(diary);
+        log.info(diaryEntity.toString());
+    }
 
     @PostMapping("diary")
     public CommonResponse<?> createDiary(@RequestBody CreateDiaryRequest createDiaryRequest) {
