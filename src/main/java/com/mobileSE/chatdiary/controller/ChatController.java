@@ -3,6 +3,7 @@ package com.mobileSE.chatdiary.controller;
 import cn.dev33.satoken.stp.StpUtil;
 import com.mobileSE.chatdiary.common.exception.BizError;
 import com.mobileSE.chatdiary.common.response.CommonResponse;
+import com.mobileSE.chatdiary.config.AccessLimit;
 import com.mobileSE.chatdiary.mapper.MessageMapper;
 import com.mobileSE.chatdiary.pojo.entity.MessageEntity;
 import com.mobileSE.chatdiary.pojo.vo.chat.ChatRequest;
@@ -25,6 +26,7 @@ public class ChatController {
     private final ChatService chatService;
 
     @PostMapping("chat")
+    @AccessLimit(seconds = 1, count = 2)
     public CommonResponse<?> putQuestion(@RequestBody ChatRequest chatRequest) {
         StpUtil.checkLogin();
         log.info(chatRequest.toString());
@@ -39,6 +41,7 @@ public class ChatController {
     }
 
     @GetMapping("chat")
+    @AccessLimit(seconds = 1, count = 2)
     public CommonResponse<?> getMessages() {
         StpUtil.checkLogin();
         Long id = (Long.valueOf("" + StpUtil.getLoginId()));
