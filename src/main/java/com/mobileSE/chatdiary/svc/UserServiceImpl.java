@@ -14,6 +14,9 @@ import com.mobileSE.chatdiary.svc.service.ImageService;
 import com.mobileSE.chatdiary.svc.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,6 +24,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 @Service
+@CacheConfig(cacheNames = "user")
 @Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -37,6 +41,7 @@ public class UserServiceImpl implements UserService {
      * @param email    邮箱
      */
     @Override
+    @Cacheable(key = "#email")
     public void register(String username, String password, String email) {
         UserEntity user = userDao.findByEmail(email);
 
@@ -54,6 +59,7 @@ public class UserServiceImpl implements UserService {
      * @param password 密码
      */
     @Override
+    @Cacheable(key = "#email")
     public UserVO login(String email, String password) {
         UserEntity user = userDao.findByEmail(email);
         if (user == null || !SaSecureUtil.md5(password).equals(user.getPassword())) {
@@ -63,18 +69,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CachePut(key = "#userId")
     public void editInfo(Long userId, String useInfo) {
         UserEntity user = userDao.findById(userId).get();
         userDao.save(user.setUserInfo(useInfo));
     }
 
     @Override
+    @CachePut(key = "#userId")
     public void editUsername(Long userId, String username) {
         UserEntity user = userDao.findById(userId).get();
         userDao.save(user.setUsername(username));
     }
 
     @Override
+    @Cacheable(key = "#userId")
     public UserVO getUserInfo(Long userId) {
         UserEntity userEntity = userDao.findById(userId).get();
         UserVO userVO = UserMapper.INSTANCE.toUserVO(userEntity);
@@ -91,6 +100,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CachePut(key = "#userId")
     public void editPassword(Long userId, String password) {
         UserEntity user = userDao.findById(userId).get();
         userDao.save(user.setPassword(SaSecureUtil.md5(password)));
@@ -98,6 +108,7 @@ public class UserServiceImpl implements UserService {
 
     //新增功能后端接口, 前端 发送图片, 后端保存, 作为用户头像
     @Override
+    @CachePut(key = "#userId")
     public void uploadAvatar(Long userId, MultipartFile file) throws IOException {
         imageService.uploadUserImageByUserId(file, userId);
     }
