@@ -2,6 +2,7 @@ package com.mobileSE.chatdiary.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.mobileSE.chatdiary.common.response.CommonResponse;
+import com.mobileSE.chatdiary.config.AccessLimit;
 import com.mobileSE.chatdiary.pojo.entity.DiaryEntity;
 import com.mobileSE.chatdiary.svc.service.DiaryService;
 import com.mobileSE.chatdiary.svc.service.ImageService;
@@ -29,6 +30,7 @@ public class ImageController {
     }
 
     @PostMapping("image")
+    @AccessLimit(seconds = 1, count = 10)
     public CommonResponse<?> uploadImageDiary(@RequestParam("image") List<MultipartFile> image, @RequestParam("type") String type, @RequestParam("position") String position, @RequestParam("content") String content) throws ParseException {
         StpUtil.checkLogin();
         position = removeQuotes(position);

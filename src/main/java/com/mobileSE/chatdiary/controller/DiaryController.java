@@ -2,6 +2,7 @@ package com.mobileSE.chatdiary.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.mobileSE.chatdiary.common.response.CommonResponse;
+import com.mobileSE.chatdiary.config.AccessLimit;
 import com.mobileSE.chatdiary.dao.DiaryImageDao;
 import com.mobileSE.chatdiary.mapper.DiaryMapper;
 import com.mobileSE.chatdiary.pojo.entity.DiaryEntity;
@@ -26,6 +27,7 @@ public class DiaryController {
     private final DiaryImageDao diaryImageDao;
 
     @PostMapping("diary")
+    @AccessLimit(seconds = 1, count = 10)
     public CommonResponse<?> createDiary(@RequestBody CreateDiaryRequest createDiaryRequest) {
         StpUtil.checkLogin();
         // 使用 diaryService 创建日记

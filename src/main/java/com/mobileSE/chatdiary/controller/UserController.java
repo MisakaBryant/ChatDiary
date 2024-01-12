@@ -5,6 +5,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.mobileSE.chatdiary.common.exception.BizError;
 import com.mobileSE.chatdiary.common.exception.BizException;
 import com.mobileSE.chatdiary.common.response.CommonResponse;
+import com.mobileSE.chatdiary.config.AccessLimit;
 import com.mobileSE.chatdiary.pojo.vo.user.*;
 import com.mobileSE.chatdiary.svc.service.UserService;
 import jakarta.validation.Valid;
@@ -25,6 +26,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("session")
+    @AccessLimit(seconds = 1, count = 10)
     public CommonResponse<?> login(@Valid @RequestBody LoginRequest request, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -40,6 +42,7 @@ public class UserController {
     }
 
     @PostMapping("user")
+    @AccessLimit(seconds = 1, count = 10)
     public CommonResponse<?> register(@Valid @RequestBody RegisterRequest request, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
