@@ -7,11 +7,11 @@ import java.util.Date;
 import java.util.List;
 
 public interface ImageService {
-    public void uploadDiaryImageByDate(MultipartFile image, Date timestamp, Long diaryId);
+    void uploadDiaryImageByDate(MultipartFile image, Date timestamp, Long diaryId);
 
-    public void uploadUserImageByUserId(MultipartFile image, Long userId);
+    void uploadUserImageByUserId(MultipartFile image, Long userId);
 
-    public String uploadImageByName(MultipartFile image, String filename);
+    String uploadImageByName(MultipartFile image, String filename);
 
-    public List<DiaryImageEntity> getImageByDiaryId(Long id);
+    List<DiaryImageEntity> getImageByDiaryId(Long id);
 }

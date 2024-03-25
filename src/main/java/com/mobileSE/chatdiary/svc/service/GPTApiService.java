@@ -10,5 +10,4 @@ public interface GPTApiService {
 
     String simpleQuestionWithSystem(String system, String input);
 
-    String simpleQuestionUsingSchoolApi(String input);
 }

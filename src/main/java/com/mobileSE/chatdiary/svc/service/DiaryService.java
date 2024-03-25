@@ -7,17 +7,12 @@ import java.util.List;
 public interface DiaryService {
 
 
-    public DiaryEntity createDiary(DiaryEntity diary);
+    DiaryEntity createDiary(DiaryEntity diary);
 
     // 通过ID获取日记
-    public DiaryEntity getDiaryById(Long id);
 
-    public DiaryEntity updateDiary(Long id, DiaryEntity updatedDiary);
 
-    public void deleteDiary(Long id);
 
-    public List<DiaryEntity> getAllDiaries();
-
-    public List<DiaryEntity> getAllDiariesByAuthorId(Long authorId);
+    List<DiaryEntity> getAllDiariesByAuthorId(Long authorId);
 
 }

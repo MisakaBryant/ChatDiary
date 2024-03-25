@@ -18,8 +18,7 @@ public class RedisConfig {
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new Jackson2JsonRedisSerializer<>(DiaryGenEntity.class)));
 
         //使用自定义的配置构建缓存管理器
-        RedisCacheManager cacheManager = RedisCacheManager.builder(redisConnectionFactory).cacheDefaults(config).build();
 
-        return cacheManager;
+        return RedisCacheManager.builder(redisConnectionFactory).cacheDefaults(config).build();
     }
 }

@@ -6,7 +6,7 @@ import com.mobileSE.chatdiary.pojo.vo.chat.ChatRequest;
 import java.util.List;
 
 public interface ChatService {
-    public List<MessageEntity> getAllChats(Long authorId);
+    List<MessageEntity> getAllChats(Long authorId);
 
-    public void addChats(Long authorId, ChatRequest chatRequest);
+    void addChats(Long authorId, ChatRequest chatRequest);
 }
