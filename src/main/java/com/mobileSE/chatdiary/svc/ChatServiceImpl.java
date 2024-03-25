@@ -25,17 +25,26 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public MessageEntity addChats(Long authorId, ChatRequest chatRequest) {
+    public void addChats(Long authorId, ChatRequest chatRequest) {
+        // 创建并保存用户消息
         MessageEntity newMessage = new MessageEntity();
         newMessage.setAuthorId(authorId);
         newMessage.setContent(chatRequest.getContent());
         newMessage.setIsUserMe(true);
         newMessage.setTimestamp(chatRequest.getTimestamp());
-        chatDao.save(newMessage);
+        chatDao.save(newMessage); // 同步保存
         log.info(newMessage.toString());
-        String gptOutPut = apiService.simpleQuestion(chatRequest.getContent());
-        MessageEntity gptOutMessageEntity = MessageEntity.builder().content(gptOutPut).timestamp(new Date()).isUserMe(false).authorId(authorId).build();
+
+        String gptOutPut = apiService.simpleQuestion(chatRequest.getContent()).block();
+        // 创建并保存GPT输出的消息实体
+        MessageEntity gptOutMessageEntity = MessageEntity.builder()
+                .content(gptOutPut)
+                .timestamp(new Date())
+                .isUserMe(false)
+                .authorId(authorId)
+                .build();
         log.info(gptOutMessageEntity.toString());
-        return chatDao.save(gptOutMessageEntity);
     }
+
+
 }

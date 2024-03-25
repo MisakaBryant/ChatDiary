@@ -14,6 +14,8 @@ import com.plexpt.chatgpt.entity.chat.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -31,19 +33,33 @@ public class GPTApiServiceImpl implements GPTApiService {
     private final GPTApiDao gpApiDao;
 
     @Override
-    public String getByStringUsingChatGPT(String input) {
-        ChatGPT chatGPT = ChatGPT.builder().apiKeyList(gpApiDao.findAllByType(APiType.CHATGPT).stream().map(GPTApiEntity::getApiKey).collect(Collectors.toList())).timeout(900).apiHost("https://api.chatanywhere.com.cn/") //反向代理地址
-                .build().init();
+    public Mono<String> getByStringUsingChatGPT(String input) {
+        return Mono.fromCallable(() -> {
+            ChatGPT chatGPT = ChatGPT.builder()
+                    .apiKeyList(gpApiDao.findAllByType(APiType.CHATGPT).stream()
+                            .map(GPTApiEntity::getApiKey)
+                            .collect(Collectors.toList()))
+                    .timeout(900)
+                    .apiHost("https://api.chatanywhere.com.cn/") // 反向代理地址
+                    .build()
+                    .init();
 
-        Message system = Message.ofSystem("你现在是一名日记助手, 需要根据我的输入的一天的内容来生成日记, 请直接给出日记, 中文回答");
-        Message message = Message.of(input);
+            Message system = Message.ofSystem("你现在是一名日记助手, 需要根据我的输入的一天的内容来生成日记, 请直接给出日记, 中文回答");
+            Message message = Message.of(input);
 
-        ChatCompletion chatCompletion = ChatCompletion.builder().model(ChatCompletion.Model.GPT_3_5_TURBO.getName()).messages(Arrays.asList(system, message)).maxTokens(3000).temperature(0.9).build();
-        ChatCompletionResponse response = chatGPT.chatCompletion(chatCompletion);
-        Message res = response.getChoices().get(0).getMessage();
-        return res.getContent();
+            ChatCompletion chatCompletion = ChatCompletion.builder()
+                    .model(ChatCompletion.Model.GPT_3_5_TURBO.getName())
+                    .messages(Arrays.asList(system, message))
+                    .maxTokens(3000)
+                    .temperature(0.9)
+                    .build();
 
+            ChatCompletionResponse response = chatGPT.chatCompletion(chatCompletion);
+            Message res = response.getChoices().get(0).getMessage();
+            return res.getContent();
+        }).subscribeOn(Schedulers.boundedElastic());
     }
+
 
     /**
      * 获取API访问token
@@ -93,18 +109,33 @@ public class GPTApiServiceImpl implements GPTApiService {
     }
 
     @Override
-    public String simpleQuestion(String input) {
-        ChatGPT chatGPT = ChatGPT.builder().apiKeyList(gpApiDao.findAllByType(APiType.CHATGPT).stream().map(GPTApiEntity::getApiKey).collect(Collectors.toList())).timeout(900).apiHost("https://api.chatanywhere.com.cn/") //反向代理地址
-                .build().init();
+    public Mono<String> simpleQuestion(String input) {
+        return Mono.fromCallable(() -> {
+            ChatGPT chatGPT = ChatGPT.builder()
+                    .apiKeyList(gpApiDao.findAllByType(APiType.CHATGPT).stream()
+                            .map(GPTApiEntity::getApiKey)
+                            .collect(Collectors.toList()))
+                    .timeout(900)
+                    .apiHost("https://api.chatanywhere.com.cn/") // 反向代理地址
+                    .build()
+                    .init();
 
-        Message system = Message.ofSystem("你现在是一只猫娘了, 来和我对话吧, 注意50字以内,中文回答");
-        Message message = Message.of(input);
+            Message system = Message.ofSystem("你现在是一只猫娘了, 来和我对话吧, 注意50字以内,中文回答");
+            Message message = Message.of(input);
 
-        ChatCompletion chatCompletion = ChatCompletion.builder().model(ChatCompletion.Model.GPT_3_5_TURBO.getName()).messages(Arrays.asList(system, message)).maxTokens(3000).temperature(0.9).build();
-        ChatCompletionResponse response = chatGPT.chatCompletion(chatCompletion);
-        Message res = response.getChoices().get(0).getMessage();
-        return res.getContent();
+            ChatCompletion chatCompletion = ChatCompletion.builder()
+                    .model(ChatCompletion.Model.GPT_3_5_TURBO.getName())
+                    .messages(Arrays.asList(system, message))
+                    .maxTokens(3000)
+                    .temperature(0.9)
+                    .build();
+
+            ChatCompletionResponse response = chatGPT.chatCompletion(chatCompletion);
+            Message res = response.getChoices().get(0).getMessage();
+            return res.getContent();
+        }).subscribeOn(Schedulers.boundedElastic());
     }
+
 
     @Override
     public String simpleQuestionWithSystem(String systemStr, String input) {

@@ -4,6 +4,7 @@ import com.mobileSE.chatdiary.svc.service.GPTApiService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import reactor.core.publisher.Mono;
 
 @SpringBootTest
 class GPTApiServiceImplTest {
@@ -13,8 +14,7 @@ class GPTApiServiceImplTest {
 
     @Test
     public void testChatGpt() {
-        String result = apiService.simpleQuestion("你好");
-        System.out.println(result);
+        Mono<String> resultMono = apiService.simpleQuestion("你好");
     }
 //    @Test
 //    public void testSchool() {

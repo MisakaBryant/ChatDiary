@@ -1,10 +1,12 @@
 package com.mobileSE.chatdiary.svc.service;
 
 
-public interface GPTApiService {
-    String getByStringUsingChatGPT(String input);
+import reactor.core.publisher.Mono;
 
-    String simpleQuestion(String input);
+public interface GPTApiService {
+    Mono<String> getByStringUsingChatGPT(String input);
+
+    Mono<String> simpleQuestion(String input);
 
     String simpleQuestionWithSystem(String system, String input);
 

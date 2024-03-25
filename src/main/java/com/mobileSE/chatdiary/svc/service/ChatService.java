@@ -8,5 +8,5 @@ import java.util.List;
 public interface ChatService {
     public List<MessageEntity> getAllChats(Long authorId);
 
-    public MessageEntity addChats( Long authorId ,ChatRequest chatRequest);
+    public void addChats(Long authorId, ChatRequest chatRequest);
 }

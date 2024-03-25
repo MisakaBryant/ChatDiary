@@ -41,7 +41,7 @@ public class ChatController {
     }
 
     @GetMapping("chat")
-    @AccessLimit(seconds = 1, count = 2)
+    @AccessLimit(seconds = 1, count = 20)
     public CommonResponse<?> getMessages() {
         StpUtil.checkLogin();
         Long id = (Long.valueOf("" + StpUtil.getLoginId()));

@@ -34,7 +34,6 @@ public class AccessLimitInterceptor implements HandlerInterceptor {
                 if (seconds > 0 && count >= 0) {
                     String key = request.getRemoteAddr() + ":" + request.getRequestURI() ;
                     String value = this.stringRedisTemplate.opsForValue().get(key) ;
-                    System.out.println("当前为：" + value) ;
                     if (value == null) {
                         this.stringRedisTemplate.opsForValue().set(key, String.valueOf(count - 1) , seconds, TimeUnit.SECONDS) ;
                         return true ;
